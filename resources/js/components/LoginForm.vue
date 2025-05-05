@@ -64,10 +64,10 @@ const isSubmitting = ref(false);
 
 // Use watch to clear specific field errors when typing - using utility function
 watch(
-    form, 
+    form,
     (newForm, oldForm) => {
-        // Use the utility function to handle error clearing
-        handleFieldErrorClearing(newForm, oldForm, errors);
+        // The utility now returns a new errors object instead of modifying the ref directly
+        errors.value = handleFieldErrorClearing(newForm, oldForm, errors.value);
     },
     { deep: true } // Watch all properties of the form object
 );
