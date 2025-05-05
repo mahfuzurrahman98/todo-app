@@ -14,8 +14,12 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = Todo::all();
-        return response()->json($todos);
+        try {
+            $todos = Todo::all();
+            return response()->json($todos);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -23,7 +27,11 @@ class TodoController extends Controller
      */
     public function create()
     {
-        //
+        try {
+            //
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -31,8 +39,12 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request)
     {
-        $todo = Todo::create($request->validated());
-        return response()->json($todo, 201);
+        try {
+            $todo = Todo::create($request->validated());
+            return response()->json($todo, 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -40,7 +52,11 @@ class TodoController extends Controller
      */
     public function show(Todo $todo)
     {
-        return response()->json($todo);
+        try {
+            return response()->json($todo);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -48,7 +64,11 @@ class TodoController extends Controller
      */
     public function edit(Todo $todo)
     {
-        //
+        try {
+            //
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -56,8 +76,12 @@ class TodoController extends Controller
      */
     public function update(UpdateTodoRequest $request, Todo $todo)
     {
-        $todo->update($request->validated());
-        return response()->json($todo);
+        try {
+            $todo->update($request->validated());
+            return response()->json($todo);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -65,7 +89,11 @@ class TodoController extends Controller
      */
     public function destroy(Todo $todo)
     {
-        $todo->delete();
-        return response()->json(null, 204);
+        try {
+            $todo->delete();
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
