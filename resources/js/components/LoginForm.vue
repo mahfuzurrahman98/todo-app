@@ -50,7 +50,7 @@
 import { ref, reactive, watch } from "vue";
 import { ZodFormattedError } from "zod";
 import { loginSchema, type LoginFormValues } from "../schemas/auth-schema";
-import { extractFirstFieldErrors, handleFieldErrorClearing } from "../utils/form-utils";
+import { extractFirstFieldErrors } from "../utils/form-utils";
 import ErrorMessage from "./ErrorMessage.vue";
 import { Loader } from "lucide-vue-next";
 
@@ -62,12 +62,22 @@ const form = reactive<LoginFormValues>({
 const errors = ref<ZodFormattedError<LoginFormValues> | null>(null);
 const isSubmitting = ref(false);
 
-// Use watch to clear specific field errors when typing - using utility function
+// Use watch to clear specific field errors when typing
 watch(
     form,
     (newForm, oldForm) => {
-        // The utility now returns a new errors object instead of modifying the ref directly
-        errors.value = handleFieldErrorClearing(newForm, oldForm, errors.value);
+        // Only proceed if there are errors to clear
+        if (!errors.value) return;
+
+        // Get all field names from the form
+        const fieldNames = Object.keys(newForm);
+
+        // Clear specific field errors
+        fieldNames.forEach((fieldName) => {
+            if (errors.value && errors.value[fieldName]) {
+                delete errors.value[fieldName];
+            }
+        });
     },
     { deep: true } // Watch all properties of the form object
 );
