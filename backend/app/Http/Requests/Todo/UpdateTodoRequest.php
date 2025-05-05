@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Todo;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateTodoRequest extends FormRequest
 {
@@ -39,5 +41,23 @@ class UpdateTodoRequest extends FormRequest
             'title.required' => 'The todo title is required',
             'title.max' => 'The todo title must not exceed 255 characters',
         ];
+    }
+    
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     *
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $firstError = $errors->first();
+        
+        throw new HttpResponseException(response()->json([
+            'message' => $firstError,
+        ], 422));
     }
 }
