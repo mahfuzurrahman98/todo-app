@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Http\Requests\Todo;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateTodoRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'title' => 'sometimes|required|string|max:255',
+            'body' => 'sometimes|nullable|string',
+            'completed' => 'sometimes|boolean',
+            'user_id' => 'sometimes|required|exists:users,id',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'The todo title is required',
+            'title.max' => 'The todo title must not exceed 255 characters',
+            'user_id.required' => 'The user ID is required',
+            'user_id.exists' => 'The selected user does not exist',
+        ];
+    }
+}
