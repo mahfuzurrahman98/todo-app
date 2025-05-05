@@ -25,7 +25,6 @@ class UpdateTodoRequest extends FormRequest
             'title' => 'sometimes|required|string|max:255',
             'body' => 'sometimes|nullable|string',
             'completed' => 'sometimes|boolean',
-            'user_id' => 'sometimes|required|exists:users,id',
         ];
     }
 
@@ -39,8 +38,6 @@ class UpdateTodoRequest extends FormRequest
         return [
             'title.required' => 'The todo title is required',
             'title.max' => 'The todo title must not exceed 255 characters',
-            'user_id.required' => 'The user ID is required',
-            'user_id.exists' => 'The selected user does not exist',
         ];
     }
 }

@@ -3,34 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Todo;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Http\Requests\Todo\StoreTodoRequest;
 use App\Http\Requests\Todo\UpdateTodoRequest;
-use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $todos = Todo::all();
-            return response()->json($todos);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
+            $todos = Todo::where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        try {
-            //
+            return Response::api('Todos fetched successfully', $todos, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Response::api($e->getMessage(), null, 500);
         }
     }
 
@@ -40,10 +32,13 @@ class TodoController extends Controller
     public function store(StoreTodoRequest $request)
     {
         try {
-            $todo = Todo::create($request->validated());
-            return response()->json($todo, 201);
+            $validated = $request->validated();
+            $validated['user_id'] = $request->user()->id;
+            
+            $todo = Todo::create($validated);
+            return Response::api('Todo created successfully', $todo, 201);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Response::api($e->getMessage(), null, 500);
         }
     }
 
@@ -53,21 +48,9 @@ class TodoController extends Controller
     public function show(Todo $todo)
     {
         try {
-            return response()->json($todo);
+            return Response::api('Todo fetched successfully', $todo, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Todo $todo)
-    {
-        try {
-            //
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Response::api($e->getMessage(), null, 500);
         }
     }
 
@@ -78,9 +61,9 @@ class TodoController extends Controller
     {
         try {
             $todo->update($request->validated());
-            return response()->json($todo);
+            return Response::api('Todo updated successfully', $todo, 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Response::api($e->getMessage(), null, 500);
         }
     }
 
@@ -91,9 +74,9 @@ class TodoController extends Controller
     {
         try {
             $todo->delete();
-            return response()->json(null, 204);
+            return Response::api('Todo deleted successfully', null, 204);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Response::api($e->getMessage(), null, 500);
         }
     }
 }
