@@ -21,7 +21,9 @@ class TodoController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            return Response::api('Todos fetched successfully', TodoResource::collection($todos), 200);
+            return Response::api('Todos fetched successfully', [
+                'todos' => TodoResource::collection($todos)
+            ], 200);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
@@ -37,7 +39,7 @@ class TodoController extends Controller
             $validated['user_id'] = $request->user()->id;
 
             $todo = Todo::create($validated);
-            return Response::api('Todo created successfully', TodoResource::make($todo), 201);
+            return Response::api('Todo created successfully', ['todo' => TodoResource::make($todo)], 201);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
@@ -52,7 +54,7 @@ class TodoController extends Controller
             if ($todo->user_id !== $request->user()->id) {
                 return Response::api('You are not authorized to view this todo', null, 403);
             }
-            return Response::api('Todo fetched successfully', TodoResource::make($todo), 200);
+            return Response::api('Todo fetched successfully', ['todo' => TodoResource::make($todo)], 200);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
@@ -68,7 +70,7 @@ class TodoController extends Controller
                 return Response::api('You are not authorized to update this todo', null, 403);
             }
             $todo->update($request->validated());
-            return Response::api('Todo updated successfully', TodoResource::make($todo), 200);
+            return Response::api('Todo updated successfully', ['todo' => TodoResource::make($todo)], 200);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
