@@ -22,7 +22,7 @@ class LoginRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|max:255|exists:users,email',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
         ];
     }
@@ -37,7 +37,6 @@ class LoginRequest extends ApiFormRequest
         return [
             'email.required' => 'Email address is required',
             'email.email' => 'Please enter a valid email address',
-            'email.exists' => 'No account found with this email address',
             'password.required' => 'Password is required',
             'password.min' => 'Password must be at least 8 characters',
         ];
