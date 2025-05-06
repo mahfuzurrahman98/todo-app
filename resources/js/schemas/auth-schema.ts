@@ -1,4 +1,4 @@
-import { object, string, boolean, infer as zInfer } from "zod";
+import { object, string, infer as zInfer } from "zod";
 
 export const loginSchema = object({
     email: string()
