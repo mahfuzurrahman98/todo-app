@@ -12,9 +12,10 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
+        $validated = $request->validated();
         try {
-            $email = $request->email;
-            $password = $request->password;
+            $email = $validated['email'];
+            $password = $validated['password'];
 
             $user = User::where('email', $email)->first();
 
