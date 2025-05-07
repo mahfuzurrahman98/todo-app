@@ -40,7 +40,7 @@
 
         <!-- Edit Mode -->
         <div v-else>
-            <TodoForm :todo="todo" :is-submitting="isSubmitting" @submit="handleSubmit" @cancel="cancelEditing" />
+            <EditTodoForm :todo="todo" :is-submitting="isSubmitting" @submit="handleSubmit" @cancel="cancelEditing" />
         </div>
     </li>
 </template>
@@ -48,9 +48,9 @@
 <script setup lang="ts">
 import { PencilIcon, TrashIcon } from "lucide-vue-next";
 import { Todo } from "../../schemas/todo-schema";
-import { UpdateTodoFormValue } from "../../types/todo"
+import { TodoFormValue } from "../../types/todo"
 import { ref } from "vue";
-import TodoForm from "./TodoForm.vue";
+import EditTodoForm from "./EditTodoForm.vue";
 
 interface ItemProps {
     todo: Todo;
@@ -59,7 +59,7 @@ interface ItemProps {
 
 interface ItemEmits {
     (e: 'toggle-status', todo: Todo): void;
-    (e: 'update', id: number, updates: { title: string; body?: string }): void;
+    (e: 'update', id: number, updates: TodoFormValue): void;
     (e: 'delete', todo: Todo): void;
 }
 
@@ -79,17 +79,11 @@ const cancelEditing = () => {
     isEditing.value = false;
 };
 
-// Handle save from TodoForm
-const handleSubmit = (data: UpdateTodoFormValue) => {
-    console.log("old todo:", props.todo);
-    console.log("update data:", data);
-
-    // Emit save event with updated data
-    emit("update", props.todo.id, {
-        title: data.title,
-        body: data.body
-    });
-
+// Handle form submission
+const handleSubmit = (id: number, updates: TodoFormValue) => {
+    // Emit update event with todo ID and updated data
+    emit("update", id, updates);
+    
     // Exit edit mode
     isEditing.value = false;
 };
