@@ -1,11 +1,12 @@
-import { User, AuthToken } from "./models";
-
 /**
- * Login request interface
+ * User interface
  */
-export interface LoginRequest {
+export interface User {
+    id: number;
+    name: string;
     email: string;
-    password: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 /**
