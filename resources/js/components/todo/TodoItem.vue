@@ -1,54 +1,96 @@
 <template>
-    <li class="px-6 py-4 flex items-center">
-        <!-- Checkbox -->
-        <div class="mr-4">
-            <input :id="`todo-${todo.id}`" type="checkbox" :checked="todo.completed"
-                @change="$emit('toggle-status', todo)"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+    <li class="px-6 py-4">
+        <!-- View Mode -->
+        <div v-if="!isEditing" class="flex items-center">
+            <!-- Checkbox -->
+            <div class="mr-4">
+                <input :id="`todo-${todo.id}`" type="checkbox" :checked="todo.completed"
+                    @change="$emit('toggle-status', todo)" class="h-4 w-4 accent-gray-900" />
+            </div>
+
+            <!-- Todo content -->
+            <div class="flex-1 min-w-0" @click="startEditing">
+                <div class="block cursor-pointer">
+                    <p :class="[
+                        'text-sm font-medium',
+                        todo.completed
+                            ? 'text-gray-400 line-through'
+                            : 'text-gray-900',
+                    ]">
+                        {{ todo.title }}
+                    </p>
+                    <p v-if="todo.body" class="text-sm text-gray-500 truncate">
+                        {{ todo.body }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="ml-4 flex-shrink-0 flex space-x-2">
+                <button @click="startEditing"
+                    class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">
+                    <PencilIcon class="h-5 w-5" />
+                </button>
+                <button @click="$emit('delete', todo)"
+                    class="p-1 rounded-full text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    <TrashIcon class="h-5 w-5" />
+                </button>
+            </div>
         </div>
 
-        <!-- Todo content -->
-        <div class="flex-1 min-w-0">
-            <label :for="`todo-${todo.id}`" class="block">
-                <p :class="[
-                    'text-sm font-medium',
-                    todo.completed
-                        ? 'text-gray-400 line-through'
-                        : 'text-gray-900',
-                ]">
-                    {{ todo.title }}
-                </p>
-                <p v-if="todo.body" class="text-sm text-gray-500 truncate">
-                    {{ todo.body }}
-                </p>
-            </label>
-        </div>
-
-        <!-- Actions -->
-        <div class="ml-4 flex-shrink-0 flex space-x-2">
-            <button @click="$emit('edit', todo)"
-                class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <PencilIcon class="h-5 w-5" />
-            </button>
-            <button @click="$emit('delete', todo)"
-                class="p-1 rounded-full text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                <TrashIcon class="h-5 w-5" />
-            </button>
+        <!-- Edit Mode -->
+        <div v-else>
+            <TodoForm :todo="todo" :is-submitting="isSubmitting" @submit="handleSubmit" @cancel="cancelEditing" />
         </div>
     </li>
 </template>
 
 <script setup lang="ts">
 import { PencilIcon, TrashIcon } from "lucide-vue-next";
-import { Todo } from "../../types/models";
+import { Todo } from "../../schemas/todo-schema";
+import { UpdateTodoFormValue } from "../../types/todo"
+import { ref } from "vue";
+import TodoForm from "./TodoForm.vue";
 
-defineProps<{
+interface ItemProps {
     todo: Todo;
-}>();
+    isSubmitting?: boolean;
+}
 
-defineEmits<{
+interface ItemEmits {
     (e: 'toggle-status', todo: Todo): void;
-    (e: 'edit', todo: Todo): void;
+    (e: 'update', id: number, updates: { title: string; body?: string }): void;
     (e: 'delete', todo: Todo): void;
-}>();
+}
+
+const props = defineProps<ItemProps>();
+const emit = defineEmits<ItemEmits>();
+
+// Edit mode state
+const isEditing = ref(false);
+
+// Start editing mode
+const startEditing = () => {
+    isEditing.value = true;
+};
+
+// Cancel editing
+const cancelEditing = () => {
+    isEditing.value = false;
+};
+
+// Handle save from TodoForm
+const handleSubmit = (data: UpdateTodoFormValue) => {
+    console.log("old todo:", props.todo);
+    console.log("update data:", data);
+
+    // Emit save event with updated data
+    emit("update", props.todo.id, {
+        title: data.title,
+        body: data.body
+    });
+
+    // Exit edit mode
+    isEditing.value = false;
+};
 </script>
