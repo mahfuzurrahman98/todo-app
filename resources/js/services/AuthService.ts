@@ -1,5 +1,4 @@
-import { ApiResponse, User } from "../types/models";
-import { LoginRequest, LoginResponse } from "../types/auth";
+import { LoginFormValues } from './../schemas/auth-schema';
 import { AUTH_ENDPOINTS } from "../api/endpoints";
 import {
     apiRequest,
@@ -8,6 +7,8 @@ import {
 } from "../api/apiUtils";
 import { ApiService } from "./ApiService";
 import { localStorageService } from "./LocalStorageService";
+import { ApiResponse } from '../types';
+import { User } from '../types/auth';
 
 /**
  * Authentication service
@@ -19,7 +20,7 @@ export class AuthService extends ApiService {
      * @param data - Login credentials
      * @returns Promise with login response
      */
-    async login(data: LoginRequest): Promise<{ token: string }> {
+    async login(data: LoginFormValues): Promise<{ token: string }> {
         try {
             const response = await apiRequest<ApiResponse<{ token: string }>>(
                 AUTH_ENDPOINTS.LOGIN,
