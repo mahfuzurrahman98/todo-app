@@ -14,7 +14,7 @@
 
         <!-- Create Todo Form -->
         <div class="px-6" v-if="showCreateForm">
-            <TodoForm
+            <CreateTodoForm
                 :is-submitting="isSubmitting"
                 @submit="handleCreate"
                 @cancel="showCreateForm = false"
@@ -52,7 +52,8 @@ import { PlusIcon, ClipboardIcon } from "lucide-vue-next";
 import { ref } from "vue";
 import { CreateTodo, Todo } from "../../schemas/todo-schema";
 import TodoItem from "./TodoItem.vue";
-import TodoForm from "./TodoForm.vue";
+import CreateTodoForm from "./CreateTodoForm.vue";
+import { TodoFormValue } from "../../types/todo";
 
 interface ListProps {
     todos: Todo[];
@@ -73,23 +74,16 @@ const emit = defineEmits<ListEmits>();
 // UI state
 const showCreateForm = ref(false);
 
-// Handle create todo form submission
-const handleCreate = (data: { title: string; body?: string }) => {
-    emit("create", {
-        title: data.title,
-        body: data.body,
-        completed: false,
-    });
+// Handle create form submission
+const handleCreate = (data: CreateTodo) => {
+    emit("create", data);
 
     // Hide form after submission
     showCreateForm.value = false;
 };
 
-// Handle update todo form submission
-const handleUpdate = (id: number, data: { title: string; body?: string }) => {
-    emit("update", id, {
-        title: data.title,
-        body: data.body,
-    });
-}
+// Handle update form submission
+const handleUpdate = (id: number, data: TodoFormValue) => {
+    emit("update", id, data);
+};
 </script>
