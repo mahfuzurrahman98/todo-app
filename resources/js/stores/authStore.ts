@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import { User } from "../types/models";
-import { LoginRequest } from "../types/auth";
 import { authService } from "../services/AuthService";
 import { localStorageService } from "../services/LocalStorageService";
+import { LoginFormValues } from "../schemas/auth-schema";
+import { User } from "../types/auth";
 
 /**
  * Authentication store interface
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore("auth", () => {
      *
      * @param credentials - Login credentials
      */
-    const login = async (credentials: LoginRequest) => {
+    const login = async (credentials: LoginFormValues) => {
         try {
             loading.value = true;
             errorMessage.value = null;
