@@ -3,7 +3,9 @@
         <div class="max-w-4xl mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
                 <!-- Header -->
-                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <div
+                    class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+                >
                     <h1 class="text-xl font-semibold text-gray-900">
                         Your Todos
                     </h1>
@@ -25,10 +27,15 @@
                 <!--Remder Todo list -->
                 <!-- Loading state -->
                 <div v-if="loading" class="py-12 px-6 text-center">
-                    <Loader class="mx-auto h-12 w-12 text-gray-400 animate-spin" />
+                    <Loader
+                        class="mx-auto h-12 w-12 text-gray-400 animate-spin"
+                    />
                 </div>
                 <!-- Empty state -->
-                <div v-else-if="todos.length === 0" class="py-12 px-6 text-center">
+                <div
+                    v-else-if="todos.length === 0"
+                    class="py-12 px-6 text-center"
+                >
                     <ClipboardIcon class="mx-auto h-12 w-12 text-gray-400" />
                     <h3 class="mt-2 text-sm font-medium text-gray-900">
                         No todos found
@@ -37,16 +44,26 @@
                         Get started by creating a new todo.
                     </p>
                     <div class="mt-6">
-                        <button @click="$emit('new-todo')"
-                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">
+                        <button
+                            @click="$emit('new-todo')"
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+                        >
                             <PlusIcon class="h-4 w-4 mr-1" />
                             New Todo
                         </button>
                     </div>
                 </div>
                 <!-- Todo list -->
-                <TodoList v-else :todos="todos" :is-submitting="isSubmitting" @reload="fetchTodos"
-                    @toggle-status="toggleTodoStatus" @delete="deleteTodo" @update="updateTodo" @create="createTodo" />
+                <TodoList
+                    v-else
+                    :todos="todos"
+                    :is-submitting="isSubmitting"
+                    @reload="fetchTodos"
+                    @toggle-status="toggleTodoStatus"
+                    @delete="deleteTodo"
+                    @create="createTodo"
+                    @update="updateTodo"
+                />
             </div>
         </div>
     </div>
@@ -57,13 +74,9 @@ import { ref, reactive, onMounted } from "vue";
 import TodoList from "../components/todo/TodoList.vue";
 import TodoStatistics from "../components/todo/TodoStatistics.vue";
 import { todoService } from "../services/TodoService";
-import {
-    Loader,
-    PlusIcon,
-    ClipboardIcon
-} from "lucide-vue-next";
+import { Loader, PlusIcon, ClipboardIcon } from "lucide-vue-next";
 import { CreateTodo, Todo } from "../schemas/todo-schema";
-import { UpdateTodoFormValue } from "../types/todo";
+import { TodoFormValue } from "../types/todo";
 
 // State
 const todos = ref<Todo[]>([]);
@@ -169,7 +182,7 @@ const createTodo = async (data: CreateTodo) => {
 };
 
 // Update an existing todo
-const updateTodo = async (id: number, updates: UpdateTodoFormValue) => {
+const updateTodo = async (id: number, updates: TodoFormValue) => {
     console.log("updating todo", id, updates);
     try {
         isSubmitting.value = true;
@@ -218,6 +231,6 @@ onMounted(() => {
     (async function () {
         await fetchTodos();
         await loadStatistics();
-    }());
+    })();
 });
 </script>
