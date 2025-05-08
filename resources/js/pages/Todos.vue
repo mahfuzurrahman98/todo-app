@@ -21,7 +21,7 @@
                             size="sm"
                             @click="handleLogout"
                             :disabled="isLoggingOut"
-                            class="text-gray-600 hover:text-gray-900"
+                            class="text-red-500 hover:text-red-700"
                         >
                             <LoaderCircle
                                 v-if="isLoggingOut"
