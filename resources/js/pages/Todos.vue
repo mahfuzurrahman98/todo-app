@@ -9,6 +9,28 @@
                     <h1 class="text-xl font-semibold text-gray-900">
                         Your Todos
                     </h1>
+                    <div class="flex items-center space-x-4">
+                        <span
+                            v-if="user"
+                            class="text-sm font-medium text-gray-700 border border-gray-200 rounded-md px-3 py-1 bg-gray-50"
+                        >
+                            {{ userName }}
+                        </span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            @click="handleLogout"
+                            :disabled="isLoggingOut"
+                            class="text-gray-600 hover:text-gray-900"
+                        >
+                            <LoaderCircle
+                                v-if="isLoggingOut"
+                                class="h-4 w-4 mr-1 animate-spin"
+                            />
+                            <LogOut v-else class="h-4 w-4 mr-1" />
+                            Logout
+                        </Button>
+                    </div>
                 </div>
 
                 <!-- Filters -->
@@ -21,7 +43,7 @@
                 </div>
 
                 <!-- Statistics -->
-                <TodoStatistics :statistics="statistics" />
+                <TodoStatistics :statistics="statistics" :loading="loading" />
 
                 <!--Remder Todo list -->
                 <!-- Loading state -->
@@ -61,7 +83,7 @@
                         {{
                             filters.status === "all"
                                 ? "Get started by creating a new todo."
-                                : "Try changing the filters."
+                                : "Try changing or reset the filters."
                         }}
                     </p>
                     <div v-if="filters.status === 'all'" class="mt-6">
@@ -78,20 +100,33 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import TodoList from "../components/todo/TodoList.vue";
 import TodoStatistics from "../components/todo/TodoStatistics.vue";
 import TodoFiltersComponent from "../components/todo/TodoFilters.vue";
 import { todoService } from "../services/TodoService";
-import { Loader, PlusIcon, ClipboardIcon } from "lucide-vue-next";
-import { CreateTodo, Todo } from "../schemas/todo-schema";
 import {
-    TodoFilters,
-    TodoFiltersSortByEnum,
-    TodoFiltersStatusEnum,
-    TodoFormValue,
-    TodoStats,
-} from "../types/todo";
+    Loader,
+    PlusIcon,
+    ClipboardIcon,
+    LogOut,
+    LoaderCircle,
+} from "lucide-vue-next";
+import { CreateTodo, Todo } from "../schemas/todo-schema";
+import { TodoFilters, TodoFormValue, TodoStats } from "../interfaces/todo";
 import Button from "../components/ui/Button.vue";
+import { useAuthStore } from "../stores/authStore";
+import { TodoFiltersSortByEnum, TodoFiltersStatusEnum } from "../enums/todo";
+
+// Router and Auth
+const router = useRouter();
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+const userName = computed(() => {
+    if (!user.value || !user.value.name) return "";
+    // Return only the first part of the name (before any spaces)
+    return user.value.name.split(" ")[0];
+});
 
 // State
 const todos = ref<Todo[]>([]);
@@ -293,11 +328,32 @@ const deleteTodo = async (todo: Todo) => {
     }
 };
 
+// Auth actions
+const isLoggingOut = ref(false);
+
+const handleLogout = async () => {
+    if (isLoggingOut.value) return;
+
+    try {
+        isLoggingOut.value = true;
+        await authStore.logout();
+        router.push("/login");
+    } catch (err) {
+        console.error("Failed to logout", err);
+    } finally {
+        isLoggingOut.value = false;
+    }
+};
+
 // Lifecycle hooks
 
 // Load todos on component mount
 onMounted(() => {
     (async function () {
+        // Initialize auth store
+        await authStore.init();
+
+        // Fetch todos
         await fetchTodos();
         loadStatistics();
     })();
