@@ -1,11 +1,20 @@
 <template>
-    <div class="flex space-x-4 items-center">
+    <div
+        class="space-y-4 sm:space-y-0 sm:flex sm:flex-wrap sm:gap-4 sm:items-end"
+    >
         <!-- Status filter -->
-        <div>
-            <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select id="status-filter" v-model="filters.status"
-                class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                @change="emitFilterChange">
+        <div class="w-full sm:w-auto sm:flex-1">
+            <label
+                for="status-filter"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Status</label
+            >
+            <select
+                id="status-filter"
+                v-model="filters.status"
+                class="w-full block px-2 py-1 text-base outline-1 outline-gray-300 sm:text-sm rounded-md shadow-sm"
+                @change="emitFilterChange"
+            >
                 <option value="all">All</option>
                 <option value="completed">Completed</option>
                 <option value="pending">Pending</option>
@@ -13,70 +22,97 @@
         </div>
 
         <!-- Sort by -->
-        <div>
-            <label for="sort-by" class="block text-sm font-medium text-gray-700 mb-1">Sort by</label>
-            <select id="sort-by" v-model="filters.sortBy"
-                class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                @change="emitFilterChange">
-                <option value="date">Date</option>
+        <div class="w-full sm:w-auto sm:flex-1">
+            <label
+                for="sort-by"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Sort by</label
+            >
+            <select
+                id="sort-by"
+                v-model="filters.sortBy"
+                class="w-full block px-2 py-1 text-base outline-1 outline-gray-300 sm:text-sm rounded-md shadow-sm"
+                @change="emitFilterChange"
+            >
                 <option value="title">Title</option>
+                <option value="dateAsc">Date ASC</option>
+                <option value="dateDesc">Date DESC</option>
             </select>
         </div>
 
-        <!-- Sort direction -->
-        <div>
-            <label for="sort-direction" class="block text-sm font-medium text-gray-700 mb-1">Order</label>
-            <select id="sort-direction" v-model="filters.sortDirection"
-                class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                @change="emitFilterChange">
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-            </select>
+        <!-- Reset filters -->
+        <div class="w-full sm:w-auto flex justify-end mt-2 sm:mt-0">
+            <Button
+                variant="ghost"
+                size="sm"
+                @click="resetFilters"
+                class="hover:bg-gray-100"
+            >
+                <RefreshCcw class="h-4 w-4 mr-1" />
+                Reset
+            </Button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { reactive, watch } from "vue";
+import Button from "../ui/Button.vue";
+import { RefreshCcw } from "lucide-vue-next";
+import {
+    TodoFilters,
+    TodoFiltersSortByEnum,
+    TodoFiltersStatusEnum,
+} from "../../types/todo";
 
 const props = defineProps<{
-    initialStatus?: string;
-    initialSortBy?: string;
-    initialSortDirection?: string;
+    initialStatus?: TodoFiltersStatusEnum;
+    initialSortBy?: TodoFiltersSortByEnum;
 }>();
 
 const emit = defineEmits<{
-    (e: 'filter-change', filters: {
-        status: string;
-        sortBy: string;
-        sortDirection: string;
-    }): void;
+    (e: "filter-change", filters: TodoFilters): void;
 }>();
 
-const filters = reactive({
-    status: props.initialStatus || 'all',
-    sortBy: props.initialSortBy || 'date',
-    sortDirection: props.initialSortDirection || 'desc',
+// Default values
+const defaultValues: TodoFilters = {
+    status: TodoFiltersStatusEnum.All,
+    sortBy: TodoFiltersSortByEnum.DateDesc,
+};
+
+const filters = reactive<TodoFilters>({
+    status: props.initialStatus || defaultValues.status,
+    sortBy: props.initialSortBy || defaultValues.sortBy,
 });
 
 // Watch for prop changes
-watch(() => props.initialStatus, (newVal) => {
-    if (newVal) filters.status = newVal;
-}, { immediate: true });
+watch(
+    () => props.initialStatus,
+    (newVal) => {
+        if (newVal) filters.status = newVal;
+    },
+    { immediate: true }
+);
 
-watch(() => props.initialSortBy, (newVal) => {
-    if (newVal) filters.sortBy = newVal;
-}, { immediate: true });
+watch(
+    () => props.initialSortBy,
+    (newVal) => {
+        if (newVal) filters.sortBy = newVal;
+    },
+    { immediate: true }
+);
 
-watch(() => props.initialSortDirection, (newVal) => {
-    if (newVal) filters.sortDirection = newVal;
-}, { immediate: true });
+// Reset filters to default
+const resetFilters = () => {
+    filters.status = defaultValues.status;
+    filters.sortBy = defaultValues.sortBy;
+    emitFilterChange();
+};
 
 const emitFilterChange = () => {
-    emit('filter-change', {
+    emit("filter-change", {
         status: filters.status,
         sortBy: filters.sortBy,
-        sortDirection: filters.sortDirection,
     });
 };
 </script>
