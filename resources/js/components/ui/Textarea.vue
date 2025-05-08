@@ -1,12 +1,5 @@
 <template>
     <div>
-        <label
-            v-if="label"
-            :for="id"
-            class="block text-sm font-medium leading-none mb-1 text-gray-700"
-        >
-            {{ label }}
-        </label>
         <textarea
             :id="id"
             :value="modelValue"
@@ -43,11 +36,6 @@ interface TextareaProps {
      * Textarea id
      */
     id?: string;
-
-    /**
-     * Textarea label
-     */
-    label?: string;
 
     /**
      * Textarea placeholder
@@ -96,7 +84,6 @@ interface TextareaProps {
 
 const props = withDefaults(defineProps<TextareaProps>(), {
     id: undefined,
-    label: undefined,
     placeholder: "",
     required: false,
     maxlength: undefined,

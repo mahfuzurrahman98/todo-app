@@ -1,12 +1,5 @@
 <template>
     <div>
-        <label
-            v-if="label"
-            :for="id"
-            class="block text-sm font-medium leading-none mb-1 text-gray-700"
-        >
-            {{ label }}
-        </label>
         <input
             :id="id"
             :type="type"
@@ -24,9 +17,6 @@
             ]"
             ref="inputRef"
         />
-        <div v-if="error" class="mt-1 text-sm text-red-500">
-            {{ error }}
-        </div>
     </div>
 </template>
 
@@ -49,11 +39,6 @@ interface InputProps {
      * Input id
      */
     id?: string;
-
-    /**
-     * Input label
-     */
-    label?: string;
 
     /**
      * Input placeholder
@@ -97,7 +82,6 @@ interface InputProps {
 const props = withDefaults(defineProps<InputProps>(), {
     type: "text",
     id: undefined,
-    label: undefined,
     placeholder: "",
     required: false,
     maxlength: undefined,
