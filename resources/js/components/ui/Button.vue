@@ -1,7 +1,7 @@
 <template>
     <button
         :class="[
-            'cursor-pointer inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-700 disabled:opacity-50 disabled:pointer-events-none',
+            'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
             sizeClasses,
             variantClasses,
         ]"
@@ -17,28 +17,9 @@
 import { computed } from "vue";
 
 interface ButtonProps {
-    /**
-     * Button size
-     * @default "lg"
-     */
     size?: "sm" | "lg";
-
-    /**
-     * Button variant
-     * @default "normal"
-     */
     variant?: "normal" | "ghost";
-
-    /**
-     * Whether the button is disabled
-     * @default false
-     */
     disabled?: boolean;
-
-    /**
-     * Button type
-     * @default "button"
-     */
     type?: "button" | "submit" | "reset";
 }
 
@@ -55,25 +36,23 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 
 const emit = defineEmits<ButtonEmits>();
 
-// Compute size classes based on size prop
 const sizeClasses = computed(() => {
     switch (props.size) {
         case "sm":
-            return "text-xs px-2 py-1";
+            return "h-8 rounded-md px-3 text-xs";
         case "lg":
         default:
-            return "text-sm px-4 py-2";
+            return "h-10 rounded-md px-8";
     }
 });
 
-// Compute variant classes based on variant prop
 const variantClasses = computed(() => {
     switch (props.variant) {
         case "ghost":
-            return "bg-transparent hover:bg-gray-100 text-gray-800 border border-gray-300";
+            return "hover:bg-accent hover:text-accent-foreground";
         case "normal":
         default:
-            return "bg-gray-800 hover:bg-black text-white border border-transparent shadow-sm";
+            return "bg-primary text-primary-foreground shadow hover:bg-primary/90";
     }
 });
 </script>
