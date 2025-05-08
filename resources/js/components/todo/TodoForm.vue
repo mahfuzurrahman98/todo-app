@@ -6,7 +6,7 @@
                 <input
                     v-model="form.title"
                     type="text"
-                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 text-sm font-medium text-gray-900 px-0 py-1"
+                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 focus-visible:outline-none text-sm font-medium text-gray-900 px-0 py-1"
                     placeholder="Add a new todo..."
                     required
                     ref="titleInput"
@@ -15,35 +15,27 @@
 
             <!-- Body input -->
             <div>
-                <input
+                <textarea
                     v-model="form.body"
-                    type="text"
-                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 text-sm text-gray-500 px-0 py-1"
+                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 text-sm focus-visible:outline-none text-gray-500 px-0 py-1"
+                    rows="2"
                     placeholder="Add details (optional, max 200 chars)"
                     maxlength="200"
-                />
+                ></textarea>
             </div>
 
             <!-- Form actions -->
             <div class="flex justify-end space-x-2">
-                <button
-                    type="button"
-                    @click="$emit('cancel')"
-                    class="px-3 py-1 text-sm text-gray-700 hover:text-gray-900 focus:outline-none"
-                >
+                <Button variant="ghost" size="sm" @click="$emit('cancel')">
                     Cancel
-                </button>
-                <button
-                    type="submit"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
-                    :disabled="isSubmitting"
-                >
+                </Button>
+                <Button type="submit" size="sm" :disabled="isSubmitting">
                     <Loader
                         v-if="isSubmitting"
                         class="mr-2 h-4 w-4 animate-spin"
                     />
-                    {{ isEditing ? "Update" : "Add Todo" }}
-                </button>
+                    {{ isEditing ? "Update" : "Save" }}
+                </Button>
             </div>
         </form>
     </div>
@@ -52,21 +44,11 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick } from "vue";
 import { Loader } from "lucide-vue-next";
-import { Todo } from "../../schemas/todo-schema";
-import { TodoFormValue } from "../../types/todo";
+import { TodoFormEmits, TodoFormProps } from "../../types/todo";
+import Button from "../ui/Button.vue";
 
-interface FormProps {
-    todo?: Todo | null;
-    isSubmitting?: boolean;
-}
-
-interface FormEmits {
-    (e: "submit", data: TodoFormValue): void;
-    (e: "cancel"): void;
-}
-
-const props = defineProps<FormProps>();
-const emit = defineEmits<FormEmits>();
+const props = defineProps<TodoFormProps>();
+const emit = defineEmits<TodoFormEmits>();
 
 // Form state
 const form = reactive({
@@ -93,7 +75,7 @@ const handleSubmit = () => {
 
     emit("submit", {
         title: form.title.trim(),
-        body: form.body.trim() || undefined,
+        body: form.body?.trim() || undefined,
     });
 
     // Reset form if not editing
