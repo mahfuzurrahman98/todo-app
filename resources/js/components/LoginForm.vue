@@ -16,24 +16,45 @@
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
-            <Input
-                id="email"
-                v-model="form.email"
-                type="text"
-                label="Email"
-                placeholder="name@example.com"
-            />
+            <div>
+                <label
+                    for="email"
+                    class="block text-sm font-medium leading-none mb-1 text-gray-700"
+                >
+                    Email
+                </label>
+                <Input
+                    id="email"
+                    v-model="form.email"
+                    type="text"
+                    placeholder="name@example.com"
+                    :error="errors?.email"
+                />
+                <ErrorMessage v-if="errors?.email" :message="errors.email" />
+            </div>
 
-            <Input
-                id="password"
-                v-model="form.password"
-                type="password"
-                label="Password"
-                placeholder="••••••••"
-            />
+            <div>
+                <label
+                    for="password"
+                    class="block text-sm font-medium leading-none mb-1 text-gray-700"
+                >
+                    Password
+                </label>
+                <Input
+                    id="password"
+                    v-model="form.password"
+                    type="password"
+                    label="Password"
+                    placeholder="••••••••"
+                />
+                <ErrorMessage
+                    v-if="errors?.password"
+                    :message="errors.password"
+                />
+            </div>
 
             <Button type="submit" :disabled="isSubmitting" class="w-full">
-                <Loader v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
+                <Loader v-if="isSubmitting" class="h-4 w-4 animate-spin" />
                 {{ isSubmitting ? "Logging in" : "Login" }}
             </Button>
         </form>
@@ -49,6 +70,7 @@ import { useAuthStore } from "../stores/authStore";
 import { Loader } from "lucide-vue-next";
 import Button from "./ui/Button.vue";
 import Input from "./ui/Input.vue";
+import ErrorMessage from "./ui/ErrorMessage.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

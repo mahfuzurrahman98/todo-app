@@ -48,7 +48,8 @@
                 @click="resetFilters"
                 class="hover:bg-gray-100"
             >
-                <RefreshCcw class="h-4 w-4 mr-1" />
+                <!-- // animate-spin if resetting -->
+                <RefreshCcw :class="['h-4 w-4', resetting && 'animate-spin']" />
                 Reset
             </Button>
         </div>
@@ -56,11 +57,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import Button from "../ui/Button.vue";
 import { RefreshCcw } from "lucide-vue-next";
 import { TodoFiltersSortByEnum, TodoFiltersStatusEnum } from "../../enums/todo";
 import { TodoFilters } from "../../interfaces/todo";
+
+// States
+const resetting = ref(false);
 
 const props = defineProps<{
     initialStatus?: TodoFiltersStatusEnum;
@@ -101,9 +105,14 @@ watch(
 
 // Reset filters to default
 const resetFilters = () => {
+    resetting.value = true;
     filters.status = defaultValues.status;
     filters.sortBy = defaultValues.sortBy;
     emitFilterChange();
+    // resetting.value = false;
+    setTimeout(() => {
+        resetting.value = false;
+    }, 300);
 };
 
 const emitFilterChange = () => {
