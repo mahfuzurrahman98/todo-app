@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-2xl mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
                 <!-- Header -->
                 <div
@@ -12,14 +12,13 @@
                 </div>
 
                 <!-- Filters -->
-                <!-- <div class="px-6 py-4 border-b border-gray-200">
-                    <TodoFilters
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <TodoFiltersComponent
                         :initial-status="filters.status"
-                        :initial-sort-by="sortBy"
-                        :initial-sort-direction="sortDirection"
+                        :initial-sort-by="filters.sortBy"
                         @filter-change="handleFilterChange"
                     />
-                </div> -->
+                </div>
 
                 <!-- Statistics -->
                 <TodoStatistics :statistics="statistics" />
@@ -31,31 +30,9 @@
                         class="mx-auto h-12 w-12 text-gray-400 animate-spin"
                     />
                 </div>
-                <!-- Empty state -->
-                <div
-                    v-else-if="todos.length === 0"
-                    class="py-12 px-6 text-center"
-                >
-                    <ClipboardIcon class="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">
-                        No todos found
-                    </h3>
-                    <p class="mt-1 text-sm text-gray-500">
-                        Get started by creating a new todo.
-                    </p>
-                    <div class="mt-6">
-                        <button
-                            @click="$emit('new-todo')"
-                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
-                        >
-                            <PlusIcon class="h-4 w-4 mr-1" />
-                            New Todo
-                        </button>
-                    </div>
-                </div>
                 <!-- Todo list -->
                 <TodoList
-                    v-else
+                    v-else-if="todos.length > 0"
                     :todos="todos"
                     :is-submitting="isSubmitting"
                     @reload="fetchTodos"
@@ -64,19 +41,57 @@
                     @create="createTodo"
                     @update="updateTodo"
                 />
+                <!-- Empty state only if filter status is "all" -->
+                <div
+                    v-else-if="todos.length === 0"
+                    class="py-12 px-6 text-center"
+                >
+                    <ClipboardIcon class="mx-auto h-12 w-12 text-gray-400" />
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">
+                        {{
+                            filters.status === "all"
+                                ? "No todos found"
+                                : filters.status === "completed"
+                                ? "No completed todos found"
+                                : "No pending todos found"
+                        }}
+                    </h3>
+
+                    <p class="mt-1 text-sm text-gray-500">
+                        {{
+                            filters.status === "all"
+                                ? "Get started by creating a new todo."
+                                : "Try changing the filters."
+                        }}
+                    </p>
+                    <div v-if="filters.status === 'all'" class="mt-6">
+                        <Button @click="$emit('new-todo')">
+                            <PlusIcon class="h-4 w-4 mr-1" />
+                            New Todo
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import TodoList from "../components/todo/TodoList.vue";
 import TodoStatistics from "../components/todo/TodoStatistics.vue";
+import TodoFiltersComponent from "../components/todo/TodoFilters.vue";
 import { todoService } from "../services/TodoService";
 import { Loader, PlusIcon, ClipboardIcon } from "lucide-vue-next";
 import { CreateTodo, Todo } from "../schemas/todo-schema";
-import { TodoFormValue } from "../types/todo";
+import {
+    TodoFilters,
+    TodoFiltersSortByEnum,
+    TodoFiltersStatusEnum,
+    TodoFormValue,
+    TodoStats,
+} from "../types/todo";
+import Button from "../components/ui/Button.vue";
 
 // State
 const todos = ref<Todo[]>([]);
@@ -86,27 +101,21 @@ const isSubmitting = ref(false);
 const isDeleting = ref(false);
 
 // Filters
-const filters = reactive<{
-    status: "all" | "completed" | "pending";
-    sortBy: "date" | "title";
-    sortDirection: "asc" | "desc";
-}>({
-    status: "all",
-    sortBy: "date",
-    sortDirection: "desc",
+const filters = reactive<TodoFilters>({
+    status: TodoFiltersStatusEnum.All,
+    sortBy: TodoFiltersSortByEnum.DateDesc,
 });
 
-const statistics = reactive<{
-    total: number;
-    completed: number;
-    pending: number;
-}>({
+const statistics = reactive<TodoStats>({
     total: 0,
     completed: 0,
     pending: 0,
 });
 
 // Actions
+
+// All todos (unfiltered)
+const allTodos = ref<Todo[]>([]);
 
 // Load todos from API
 const fetchTodos = async () => {
@@ -115,7 +124,10 @@ const fetchTodos = async () => {
         error.value = null;
 
         // Get todos
-        todos.value = await todoService.getAll();
+        allTodos.value = await todoService.getAll();
+
+        // Apply filters
+        applyFilters();
     } catch (err: any) {
         error.value = err.message || "Failed to load todos";
     } finally {
@@ -123,13 +135,50 @@ const fetchTodos = async () => {
     }
 };
 
+// Apply filters to todos
+const applyFilters = () => {
+    // Filter by status
+    let filteredTodos = [...allTodos.value];
+
+    if (filters.status === "completed") {
+        filteredTodos = filteredTodos.filter((todo) => todo.completed);
+    } else if (filters.status === "pending") {
+        filteredTodos = filteredTodos.filter((todo) => !todo.completed);
+    }
+
+    // Sort todos
+    filteredTodos.sort((a, b) => {
+        if (filters.sortBy === "title") {
+            // Sort by title alphabetically
+            return a.title.localeCompare(b.title);
+        } else {
+            // Sort by date (created_at)
+            const dateA = new Date(a.created_at).getTime();
+            const dateB = new Date(b.created_at).getTime();
+            return filters.sortBy === "dateAsc" ? dateA - dateB : dateB - dateA;
+        }
+    });
+
+    todos.value = filteredTodos;
+};
+
+// Handle filter changes
+const handleFilterChange = (newFilters: TodoFilters) => {
+    // Update filters
+    filters.status = newFilters.status;
+    filters.sortBy = newFilters.sortBy;
+
+    // Re-apply filters to existing todos
+    applyFilters();
+};
+
 // Load statistics
-const loadStatistics = async () => {
+const loadStatistics = () => {
     try {
-        // from todos, count total, completed, and pending
-        statistics.total = todos.value.length;
-        statistics.completed = todos.value.filter((t) => t.completed).length;
-        statistics.pending = todos.value.filter((t) => !t.completed).length;
+        // Calculate statistics from all todos, not just filtered ones
+        statistics.total = allTodos.value.length;
+        statistics.completed = allTodos.value.filter((t) => t.completed).length;
+        statistics.pending = allTodos.value.filter((t) => !t.completed).length;
     } catch (err) {
         // Silently fail, not critical
         console.error("Failed to load statistics", err);
@@ -142,11 +191,20 @@ const toggleTodoStatus = async (todo: Todo) => {
         const updatedTodo = { ...todo, completed: !todo.completed };
         await todoService.update(todo.id, { completed: !todo.completed });
 
-        // Update local state
-        const index = todos.value.findIndex((t) => t.id === todo.id);
-        if (index !== -1) {
-            todos.value[index] = {
-                ...todos.value[index],
+        // Update both all todos and filtered todos
+        const allIndex = allTodos.value.findIndex((t) => t.id === todo.id);
+        if (allIndex !== -1) {
+            allTodos.value[allIndex] = {
+                ...allTodos.value[allIndex],
+                completed: !todo.completed,
+            };
+        }
+
+        // Also update the filtered list
+        const filteredIndex = todos.value.findIndex((t) => t.id === todo.id);
+        if (filteredIndex !== -1) {
+            todos.value[filteredIndex] = {
+                ...todos.value[filteredIndex],
                 completed: !todo.completed,
             };
         }
@@ -165,15 +223,18 @@ const createTodo = async (data: CreateTodo) => {
         error.value = null;
 
         // Create new todo
-        await todoService.create({
+        const newTodo = await todoService.create({
             title: data.title,
             body: data.body,
             completed: data.completed || false,
         });
 
-        // Refresh todos and statistics
-        await fetchTodos();
-        await loadStatistics();
+        // Add to all todos
+        allTodos.value.push(newTodo);
+
+        // Re-apply filters and update statistics
+        applyFilters();
+        loadStatistics();
     } catch (err: any) {
         error.value = err.message || "Failed to create todo";
     } finally {
@@ -183,7 +244,6 @@ const createTodo = async (data: CreateTodo) => {
 
 // Update an existing todo
 const updateTodo = async (id: number, updates: TodoFormValue) => {
-    console.log("updating todo", id, updates);
     try {
         isSubmitting.value = true;
         error.value = null;
@@ -194,11 +254,17 @@ const updateTodo = async (id: number, updates: TodoFormValue) => {
         }
 
         // Update existing todo
-        await todoService.update(id, updates);
+        const updatedTodo = await todoService.update(id, updates);
 
-        // Refresh todos and statistics
-        await fetchTodos();
-        await loadStatistics();
+        // Update in allTodos
+        const allIndex = allTodos.value.findIndex((t) => t.id === id);
+        if (allIndex !== -1) {
+            allTodos.value[allIndex] = updatedTodo;
+        }
+
+        // Re-apply filters and update statistics
+        applyFilters();
+        loadStatistics();
     } catch (err: any) {
         console.error("Error updating todo:", err);
         error.value = err.message || "Failed to update todo";
@@ -214,9 +280,12 @@ const deleteTodo = async (todo: Todo) => {
         error.value = null;
         await todoService.delete(todo.id);
 
-        // Refresh todos and statistics
-        await fetchTodos();
-        await loadStatistics();
+        // Remove from allTodos
+        allTodos.value = allTodos.value.filter((t) => t.id !== todo.id);
+
+        // Re-apply filters and update statistics
+        applyFilters();
+        loadStatistics();
     } catch (err: any) {
         error.value = err.message || "Failed to delete todo";
     } finally {
@@ -230,7 +299,7 @@ const deleteTodo = async (todo: Todo) => {
 onMounted(() => {
     (async function () {
         await fetchTodos();
-        await loadStatistics();
+        loadStatistics();
     })();
 });
 </script>
