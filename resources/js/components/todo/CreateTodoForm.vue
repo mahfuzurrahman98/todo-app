@@ -1,6 +1,5 @@
 <template>
-    <div class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-900">Add New Todo</h3>
+    <div class="mt-4">
         <TodoForm
             :is-submitting="isSubmitting"
             @submit="handleSubmit"
