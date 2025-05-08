@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Response;
@@ -36,7 +37,9 @@ class AuthController extends Controller
     public function profile(Request $request)
     {
         try {
-            return Response::api('User profile fetched successfully', $request->user());
+            return Response::api('User profile fetched successfully', [
+                'user' => UserResource::make($request->user())
+            ]);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
@@ -46,7 +49,7 @@ class AuthController extends Controller
     {
         try {
             $request->user()->currentAccessToken()->delete();
-            return Response::api('Logout successful');
+            return Response::api('Logout successful', null, 204);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
