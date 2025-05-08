@@ -1,7 +1,10 @@
 <template>
     <button
         :class="[
-            'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+            'cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2',
+            'disabled:pointer-events-none disabled:opacity-50',
+            '[&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0',
             sizeClasses,
             variantClasses,
         ]"
@@ -39,20 +42,20 @@ const emit = defineEmits<ButtonEmits>();
 const sizeClasses = computed(() => {
     switch (props.size) {
         case "sm":
-            return "h-8 rounded-md px-3 text-xs";
+            return "h-8 px-3 text-xs";
         case "lg":
         default:
-            return "h-10 rounded-md px-8";
+            return "h-10 px-4";
     }
 });
 
 const variantClasses = computed(() => {
     switch (props.variant) {
         case "ghost":
-            return "hover:bg-accent hover:text-accent-foreground";
+            return "bg-gray-100 text-black hover:bg-gray-200";
         case "normal":
         default:
-            return "bg-primary text-primary-foreground shadow hover:bg-primary/90";
+            return "bg-black text-white shadow-sm hover:bg-black/80";
     }
 });
 </script>
