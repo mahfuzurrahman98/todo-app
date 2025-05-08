@@ -1,10 +1,12 @@
 <template>
-    <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+    <div class="bg-white shadow-sm border border-gray-300 rounded-lg p-4">
         <form @submit.prevent="handleSubmit" class="space-y-3">
             <!-- Title input -->
             <Input
                 v-model="form.title"
-                placeholder="Add a new todo..."
+                :placeholder="
+                    isEditing ? 'Edit todo title' : 'Add a new todo...'
+                "
                 required
                 variant="underlined"
                 autofocus
@@ -15,7 +17,11 @@
             <!-- Body input -->
             <Textarea
                 v-model="form.body"
-                placeholder="Add details (optional, max 200 chars)"
+                :placeholder="
+                    isEditing
+                        ? 'Edit'
+                        : 'Add' + ' details (optional, max 200 chars)'
+                "
                 :maxlength="200"
                 :rows="2"
                 variant="underlined"
