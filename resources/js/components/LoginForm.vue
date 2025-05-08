@@ -22,7 +22,6 @@
                 type="text"
                 label="Email"
                 placeholder="name@example.com"
-                :error="errors && errors.email"
             />
 
             <Input
@@ -31,7 +30,6 @@
                 type="password"
                 label="Password"
                 placeholder="••••••••"
-                :error="errors && errors.password"
             />
 
             <Button type="submit" :disabled="isSubmitting" class="w-full">
@@ -111,7 +109,7 @@ const handleSubmit = async () => {
         });
 
         // Redirect to home page on successful login
-        router.push({ name: "Home" });
+        router.push({ name: "Todos" });
     } catch (error: any) {
         // Handle API errors
         apiError.value = error.message || "Failed to login. Please try again.";
