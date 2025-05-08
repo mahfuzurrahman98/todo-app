@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Http\Requests\Todo\StoreTodoRequest;
 use App\Http\Requests\Todo\UpdateTodoRequest;
-use App\Http\Resources\Todo\TodoResource;
+use App\Http\Resources\TodoResource;
 
 class TodoController extends Controller
 {
@@ -48,12 +48,9 @@ class TodoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Todo $todo)
+    public function show(Todo $todo)
     {
         try {
-            if ($todo->user_id !== $request->user()->id) {
-                return Response::api('You are not authorized to view this todo', null, 403);
-            }
             return Response::api('Todo fetched successfully', ['todo' => TodoResource::make($todo)], 200);
         } catch (\Exception $e) {
             return Response::api($e->getMessage(), null, 500);
@@ -66,9 +63,6 @@ class TodoController extends Controller
     public function update(UpdateTodoRequest $request, Todo $todo)
     {
         try {
-            if ($todo->user_id !== $request->user()->id) {
-                return Response::api('You are not authorized to update this todo', null, 403);
-            }
             $todo->update($request->validated());
             return Response::api('Todo updated successfully', ['todo' => TodoResource::make($todo)], 200);
         } catch (\Exception $e) {
@@ -79,12 +73,9 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Todo $todo)
+    public function destroy(Todo $todo)
     {
         try {
-            if ($todo->user_id !== $request->user()->id) {
-                return Response::api('You are not authorized to delete this todo', null, 403);
-            }
             $todo->delete();
             return Response::api('Todo deleted successfully', null, 204);
         } catch (\Exception $e) {
