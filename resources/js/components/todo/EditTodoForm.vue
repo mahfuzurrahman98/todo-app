@@ -14,7 +14,7 @@ import {
     EditTodoFormEmits,
     TodoItemProps as EditTodoFormProps,
     TodoFormValue,
-} from "../../types/todo";
+} from "../../interfaces/todo";
 import TodoForm from "./TodoForm.vue";
 
 const props = defineProps<EditTodoFormProps>();

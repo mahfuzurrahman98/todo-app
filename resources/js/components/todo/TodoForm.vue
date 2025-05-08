@@ -16,8 +16,8 @@
             <Textarea
                 v-model="form.body"
                 placeholder="Add details (optional, max 200 chars)"
-                maxlength="200"
-                rows="2"
+                :maxlength="200"
+                :rows="2"
                 variant="underlined"
                 customClass="text-gray-500"
             />
