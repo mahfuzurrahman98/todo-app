@@ -14,15 +14,6 @@ import { useAuthStore } from "../stores/authStore";
 
 const routes: RouteRecordRaw[] = [
     {
-        path: "/",
-        name: "Home",
-        component: Home,
-        meta: {
-            requiresAuth: true,
-            title: "Home",
-        },
-    },
-    {
         path: "/login",
         name: "Login",
         component: Login,
@@ -32,7 +23,7 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
-        path: "/todos",
+        path: "/",
         name: "Todos",
         component: Todos,
         meta: {
