@@ -1,4 +1,4 @@
-import { Todo, ApiResponse } from "../types/models";
+import { Todo, ApiResponse } from "../interfaces/models";
 import { TODO_ENDPOINTS } from "../api/endpoints";
 import { apiRequest, preparePrivateApiCall } from "../api/apiUtils";
 import { ApiService } from "./ApiService";

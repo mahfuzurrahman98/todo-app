@@ -1,4 +1,4 @@
-import { LoginFormValues } from './../schemas/auth-schema';
+import { LoginFormValues } from "./../schemas/auth-schema";
 import { AUTH_ENDPOINTS } from "../api/endpoints";
 import {
     apiRequest,
@@ -7,8 +7,8 @@ import {
 } from "../api/apiUtils";
 import { ApiService } from "./ApiService";
 import { localStorageService } from "./LocalStorageService";
-import { ApiResponse } from '../types';
-import { User } from '../types/auth';
+import { ApiResponse } from "../interfaces";
+import { User } from "../interfaces/auth";
 
 /**
  * Authentication service
