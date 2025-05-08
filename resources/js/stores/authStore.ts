@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { authService } from "../services/AuthService";
 import { localStorageService } from "../services/LocalStorageService";
 import { LoginFormValues } from "../schemas/auth-schema";
-import { User } from "../types/auth";
+import { User } from "../interfaces/auth";
 
 /**
  * Authentication store interface
