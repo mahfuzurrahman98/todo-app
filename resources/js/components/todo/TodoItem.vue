@@ -59,7 +59,11 @@
 
 <script setup lang="ts">
 import { TrashIcon } from "lucide-vue-next";
-import { TodoFormValue, TodoItemEmits, TodoItemProps } from "../../interfaces/todo";
+import {
+    TodoFormValue,
+    TodoItemEmits,
+    TodoItemProps,
+} from "../../interfaces/todo";
 import { ref } from "vue";
 import EditTodoForm from "./EditTodoForm.vue";
 

@@ -7,13 +7,13 @@
                 @click="showCreateForm = true"
                 size="sm"
             >
-                <PlusIcon class="h-4 w-4 mr-1" />
+                <PlusIcon class="h-4 w-4" />
                 Add Todo
             </Button>
         </div>
 
         <!-- Create Todo Form -->
-        <div class="px-6" v-if="showCreateForm">
+        <div class="px-4" v-if="showCreateForm">
             <CreateTodoForm
                 :is-submitting="isSubmitting"
                 @submit="handleCreate"
