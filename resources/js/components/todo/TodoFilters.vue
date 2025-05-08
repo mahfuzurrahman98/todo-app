@@ -59,11 +59,8 @@
 import { reactive, watch } from "vue";
 import Button from "../ui/Button.vue";
 import { RefreshCcw } from "lucide-vue-next";
-import {
-    TodoFilters,
-    TodoFiltersSortByEnum,
-    TodoFiltersStatusEnum,
-} from "../../types/todo";
+import { TodoFiltersSortByEnum, TodoFiltersStatusEnum } from "../../enums/todo";
+import { TodoFilters } from "../../interfaces/todo";
 
 const props = defineProps<{
     initialStatus?: TodoFiltersStatusEnum;

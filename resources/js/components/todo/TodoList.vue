@@ -43,7 +43,7 @@ import { CreateTodo } from "../../schemas/todo-schema";
 import TodoItem from "./TodoItem.vue";
 import CreateTodoForm from "./CreateTodoForm.vue";
 import Button from "../ui/Button.vue";
-import { TodoListEmits, TodoListProps, TodoFormValue } from "../../types/todo";
+import { TodoListEmits, TodoListProps, TodoFormValue } from "../../interfaces/todo";
 
 const props = defineProps<TodoListProps>();
 const emit = defineEmits<TodoListEmits>();

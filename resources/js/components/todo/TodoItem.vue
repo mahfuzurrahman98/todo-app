@@ -39,9 +39,9 @@
             <!-- Actions -->
             <button
                 @click="$emit('delete', todo)"
-                class="p-1 rounded-full text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                class="cursor-pointer p-1 rounded-full text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
-                <TrashIcon class="h-5 w-5" />
+                <TrashIcon class="h-4 w-4" />
             </button>
         </div>
 
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { TrashIcon } from "lucide-vue-next";
-import { TodoFormValue, TodoItemEmits, TodoItemProps } from "../../types/todo";
+import { TodoFormValue, TodoItemEmits, TodoItemProps } from "../../interfaces/todo";
 import { ref } from "vue";
 import EditTodoForm from "./EditTodoForm.vue";
 
