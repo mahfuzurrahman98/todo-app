@@ -17,13 +17,10 @@
             :maxlength="maxlength"
             :disabled="disabled"
             :class="[
-                'w-full text-sm focus-visible:outline-none',
-                variant === 'underlined'
-                    ? 'bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 px-0 py-1'
-                    : 'flex h-10 rounded-md border border-gray-400 bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-gray-600 focus-visible:ring-offset-2',
+                'w-full text-sm focus-visible:outline-none bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 px-0 py-1',
                 disabled ? 'opacity-50 cursor-not-allowed' : '',
                 error ? 'border-red-500 focus-visible:ring-red-500' : '',
-                customClass
+                customClass,
             ]"
             ref="inputRef"
         />
@@ -34,69 +31,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick } from "vue";
 
 interface InputProps {
     /**
      * The input model value
      */
     modelValue: string;
-    
+
     /**
      * Input type
      * @default "text"
      */
     type?: string;
-    
+
     /**
      * Input id
      */
     id?: string;
-    
+
     /**
      * Input label
      */
     label?: string;
-    
+
     /**
      * Input placeholder
      */
     placeholder?: string;
-    
+
     /**
      * Whether the input is required
      * @default false
      */
     required?: boolean;
-    
+
     /**
      * Maximum length of input
      */
     maxlength?: number;
-    
+
     /**
      * Whether the input is disabled
      * @default false
      */
     disabled?: boolean;
-    
+
     /**
      * Error message to display
      */
     error?: string;
-    
+
     /**
      * Whether to autofocus the input
      * @default false
      */
     autofocus?: boolean;
-    
-    /**
-     * Input variant
-     * @default "default"
-     */
-    variant?: 'default' | 'underlined';
-    
+
     /**
      * Custom class to add to the input
      */
@@ -104,23 +95,23 @@ interface InputProps {
 }
 
 const props = withDefaults(defineProps<InputProps>(), {
-    type: 'text',
+    type: "text",
     id: undefined,
     label: undefined,
-    placeholder: '',
+    placeholder: "",
     required: false,
     maxlength: undefined,
     disabled: false,
     error: undefined,
     autofocus: false,
-    variant: 'default',
-    customClass: '',
+    variant: "default",
+    customClass: "",
 });
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string): void;
-    (e: 'focus', event: FocusEvent): void;
-    (e: 'blur', event: FocusEvent): void;
+    (e: "update:modelValue", value: string): void;
+    (e: "focus", event: FocusEvent): void;
+    (e: "blur", event: FocusEvent): void;
 }>();
 
 const inputRef = ref<HTMLInputElement | null>(null);
