@@ -2,27 +2,25 @@
     <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
         <form @submit.prevent="handleSubmit" class="space-y-3">
             <!-- Title input -->
-            <div>
-                <input
-                    v-model="form.title"
-                    type="text"
-                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 focus-visible:outline-none text-sm font-medium text-gray-900 px-0 py-1"
-                    placeholder="Add a new todo..."
-                    required
-                    ref="titleInput"
-                />
-            </div>
+            <Input
+                v-model="form.title"
+                placeholder="Add a new todo..."
+                required
+                variant="underlined"
+                autofocus
+                customClass="font-medium text-gray-900"
+                ref="titleInput"
+            />
 
             <!-- Body input -->
-            <div>
-                <textarea
-                    v-model="form.body"
-                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-gray-700 focus:ring-0 text-sm focus-visible:outline-none text-gray-500 px-0 py-1"
-                    rows="2"
-                    placeholder="Add details (optional, max 200 chars)"
-                    maxlength="200"
-                ></textarea>
-            </div>
+            <Textarea
+                v-model="form.body"
+                placeholder="Add details (optional, max 200 chars)"
+                maxlength="200"
+                rows="2"
+                variant="underlined"
+                customClass="text-gray-500"
+            />
 
             <!-- Form actions -->
             <div class="flex justify-end space-x-2">
@@ -44,8 +42,10 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick } from "vue";
 import { Loader } from "lucide-vue-next";
-import { TodoFormEmits, TodoFormProps } from "../../types/todo";
+import { TodoFormEmits, TodoFormProps } from "../../interfaces/todo";
 import Button from "../ui/Button.vue";
+import Input from "../ui/Input.vue";
+import Textarea from "../ui/Textarea.vue";
 
 const props = defineProps<TodoFormProps>();
 const emit = defineEmits<TodoFormEmits>();
