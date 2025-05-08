@@ -1,7 +1,6 @@
 import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
 import Todos from "../pages/Todos.vue";
-import Profile from "../pages/Profile.vue";
 import NotFound from "../pages/NotFound.vue";
 import {
     createRouter,
@@ -39,15 +38,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
             requiresAuth: true,
             title: "Todos",
-        },
-    },
-    {
-        path: "/profile",
-        name: "Profile",
-        component: Profile,
-        meta: {
-            requiresAuth: true,
-            title: "Profile",
         },
     },
     // Catch-all route for 404
