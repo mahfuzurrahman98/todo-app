@@ -1,10 +1,10 @@
 <template>
-    <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-gray-50 py-8 px-4">
         <div class="max-w-2xl mx-auto">
             <div class="bg-white shadow-sm rounded-lg overflow-hidden">
                 <!-- Header -->
                 <div
-                    class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+                    class="px-4 py-4 border-b border-gray-200 flex justify-between items-center"
                 >
                     <h1 class="text-xl font-semibold text-gray-900">
                         Your Todos
@@ -25,16 +25,16 @@
                         >
                             <LoaderCircle
                                 v-if="isLoggingOut"
-                                class="h-4 w-4 mr-1 animate-spin"
+                                class="h-4 w-4 animate-spin"
                             />
-                            <LogOut v-else class="h-4 w-4 mr-1" />
+                            <LogOut v-else class="h-4 w-4" />
                             Logout
                         </Button>
                     </div>
                 </div>
 
                 <!-- Filters -->
-                <div class="px-6 py-4 border-b border-gray-200">
+                <div class="px-4 py-4 border-b border-gray-200">
                     <TodoFiltersComponent
                         :initial-status="filters.status"
                         :initial-sort-by="filters.sortBy"
