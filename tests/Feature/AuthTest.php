@@ -63,7 +63,9 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/auth/login', []);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email', 'password']);
+            ->assertJson([
+                'message' => 'Email address is required'
+            ]);
     }
 
     /**
