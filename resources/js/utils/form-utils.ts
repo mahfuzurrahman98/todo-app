@@ -1,4 +1,39 @@
 import { ZodError } from "zod";
+import { Ref, WatchOptions, watch } from "vue";
+import { ValidationErrorType } from "./interfaces";
+
+/**
+ * Creates a watch function that clears specific field errors when the form data changes
+ *
+ * @param formData - The reactive form data object to watch
+ * @param errors - Ref to the validation errors object
+ * @param options - Optional watch options (defaults to deep: true)
+ * @returns The watch stop function
+ */
+export function setupFormErrorClearer<T extends Record<string, any>>(
+    formData: T | Ref<T>,
+    errors: Ref<ValidationErrorType>,
+    options: WatchOptions = { deep: true }
+): () => void {
+    return watch(
+        formData,
+        (newForm) => {
+            // Only proceed if there are errors to clear
+            if (!errors.value) return;
+
+            // Get all field names from the form
+            const fieldNames = Object.keys(newForm);
+
+            // Clear specific field errors
+            fieldNames.forEach((fieldName) => {
+                if (errors.value && errors.value[fieldName]) {
+                    delete errors.value[fieldName];
+                }
+            });
+        },
+        options
+    );
+}
 
 /**
  * Extracts the first error message for each field from a Zod validation error
@@ -8,7 +43,7 @@ import { ZodError } from "zod";
  */
 export function extractFirstFieldErrors(
     zodError: ZodError
-): Record<string, string> | null {
+): ValidationErrorType {
     try {
         const formattedErrors = zodError.format();
         const fieldErrors: Record<string, string> = {};
