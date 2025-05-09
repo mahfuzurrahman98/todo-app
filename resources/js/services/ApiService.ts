@@ -1,5 +1,5 @@
 import { AUTH_ENDPOINTS } from "../api/endpoints";
-import { ApiError, AccessTokenError } from "../api/errors";
+import { ApiError, AccessTokenError } from "../utils/errors";
 import { localStorageService } from "./LocalStorageService";
 
 /**

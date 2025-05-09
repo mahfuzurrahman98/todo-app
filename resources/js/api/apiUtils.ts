@@ -5,38 +5,14 @@ import {
     NetworkError,
     ServerError,
     ValidationError,
-} from "./errors";
+} from "../utils/errors";
 import { localStorageService } from "../services/LocalStorageService";
 
 // Base URL for API
 let API_BASE_URL = "/api";
 
-// Use environment variable if available
-try {
-    // @ts-ignore - Vite specific environment variable access
-    if (import.meta.env && import.meta.env.VITE_API_URL) {
-        API_BASE_URL = import.meta.env.VITE_API_URL;
-    }
-} catch (e) {
-    // Fallback to default if environment variables aren't available
-}
-
 // Request method types
 export type ReqMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-/**
- * Get tokens from local storage
- */
-export function getTokensFromLocal() {
-    try {
-        const accessToken = localStorageService.getData<string>("auth_token");
-        return { accessToken };
-    } catch (error: any) {
-        throw new LocalStorageDataError(
-            "Failed to get tokens from local storage"
-        );
-    }
-}
 
 /**
  * Prepare a public API call
@@ -73,7 +49,7 @@ export function preparePrivateApiCall(
     payload?: any
 ): RequestInit {
     try {
-        const { accessToken } = getTokensFromLocal();
+        const accessToken = localStorageService.getData("auth_token");
 
         if (!accessToken) {
             throw new AccessTokenError("No access token found");
