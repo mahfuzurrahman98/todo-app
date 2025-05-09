@@ -1,8 +1,61 @@
-# Todo Application
+# Laravel Vue Todo App
 
-A modern, full-stack Todo application built with Laravel and Vue.js that demonstrates best practices in web development.
+## Live Demo
+**Deployed at:** [Todo App](https://ghostwhite-partridge-578659.hostingersite.com)
 
-![Todo App Screenshot](https://via.placeholder.com/800x450.png?text=Todo+App+Screenshot)
+### Demo Login
+- Email: mahfuz@test.com
+- Password: Pass@123
+
+## Overview
+A modern Todo application built with Laravel and Vue.js, featuring secure authentication and comprehensive task management.
+
+## Key Features
+- User Authentication with Laravel Sanctum
+- Todo CRUD Operations
+- Form Validation with Zod
+- Responsive UI with Tailwind CSS
+- Real-time Statistics
+
+## Tech Stack
+### Backend
+- Laravel 12
+- MySQL
+- Laravel Sanctum
+- PHPUnit
+
+### Frontend
+- Vue.js 3
+- TypeScript
+- Tailwind CSS
+- Vue Router
+- Zod
+
+## Quick Start
+1. Clone and install:
+```bash
+composer install
+npm install
+```
+
+2. Setup environment:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+3. Configure database in `.env`
+
+4. Prepare database (manual user entry):
+```bash
+php artisan migrate --seed
+```
+
+5. Start development:
+```bash
+php artisan serve
+npm run dev
+```
 
 ## Project Overview
 
@@ -55,7 +108,7 @@ resources/js/
 │   ├── enums/            # Enum definitions
 │   ├── interfaces/       # TypeScript interfaces
 │   └── form-utils.ts     # Form handling utilities
-└── router.ts             # Vue Router configuration
+└── router                # Vue Router configuration
 ```
 
 ### Backend Structure
@@ -66,93 +119,37 @@ app/
 │   ├── Controllers/      # API controllers
 │   ├── Requests/         # Form request validation
 │   └── Resources/        # API resources
-├── Models/               # Eloquent models
-└── Services/             # Business logic services
-```
-
-## Code Quality Features
-
--   **Type Safety**: TypeScript for frontend code
--   **Form Validation**: Zod schemas with custom error handling
--   **Reusable Components**: Component-based architecture
--   **Error Handling**: Consistent error handling patterns
--   **Responsive Design**: Mobile-first approach
--   **Clean Code**: Following best practices and coding standards
-
-## Getting Started
-
-### Prerequisites
-
--   PHP 8.1 or higher
--   Composer
--   Node.js and npm
--   MySQL
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/todo-app.git
-cd todo-app
-```
-
-2. Install PHP dependencies:
-
 ```bash
 composer install
-```
-
-3. Install JavaScript dependencies:
-
-```bash
 npm install
 ```
 
-4. Copy the environment file and configure your database:
-
+2. Setup environment:
 ```bash
 cp .env.example .env
-```
-
-5. Generate application key:
-
-```bash
 php artisan key:generate
 ```
 
-6. Run migrations:
+3. Configure database in `.env`
 
+4. Prepare database:
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
-7. Build frontend assets:
-
+5. Start development:
 ```bash
+php artisan serve
 npm run dev
 ```
 
-8. Start the development server:
-
+## Testing
 ```bash
-php artisan serve
-```
+# Backend tests
+php artisan test
 
-9. Visit `http://localhost:8000` in your browser
-
-## Development Workflow
-
-### Running Tests
-
-```bash
-php artisan test       # Run PHP tests
-npm run test           # Run JavaScript tests
-```
-
-### Building for Production
-
-```bash
+# Frontend tests
+npm run test
 npm run build
 ```
 
@@ -168,25 +165,8 @@ Components follow a consistent naming convention with the "Component" suffix, ma
 
 ### State Management
 
-The application uses reactive state management with Vue's Composition API, providing a clean and efficient way to handle component state.
+The application uses reactive state management with Vue's Composition API, and Pinia library providing a clean and efficient way to handle component state.
 
 ### API Integration
 
 API calls are abstracted through service layers, making the code more maintainable and testable.
-
-## Future Enhancements
-
--   Task categories/tags
--   Due dates and reminders
--   User profile management
--   Dark mode support
--   Collaborative todo lists
--   Mobile application
-
-## License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## Author
-
-Created by [Your Name] as a demonstration of modern web development practices.
