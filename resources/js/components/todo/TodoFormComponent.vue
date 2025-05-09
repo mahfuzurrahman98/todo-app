@@ -36,10 +36,7 @@
                     Cancel
                 </Button>
                 <Button type="submit" size="sm" :disabled="isSubmitting">
-                    <Loader
-                        v-if="isSubmitting"
-                        class="mr-2 h-4 w-4 animate-spin"
-                    />
+                    <Loader v-if="isSubmitting" class="h-4 w-4 animate-spin" />
                     {{ isEditing ? "Update" : "Save" }}
                 </Button>
             </div>
