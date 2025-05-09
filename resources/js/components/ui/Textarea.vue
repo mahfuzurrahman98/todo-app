@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="mb-1">
         <textarea
             :id="id"
             :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="$emit('update:modelValue', $event?.target?.value || '')"
             :placeholder="placeholder"
             :required="required"
             :maxlength="maxlength"
@@ -17,14 +17,12 @@
             ]"
             ref="textareaRef"
         ></textarea>
-        <div v-if="error" class="mt-1 text-sm text-red-500">
-            {{ error }}
-        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from "vue";
+import ErrorMessage from "./ErrorMessage.vue";
 
 interface TextareaProps {
     /**

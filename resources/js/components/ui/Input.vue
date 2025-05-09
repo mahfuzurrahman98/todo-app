@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class="mb-1">
         <input
             :id="id"
             :type="type"
             :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="$emit('update:modelValue', $event?.target?.value || '')"
             :placeholder="placeholder"
             :required="required"
             :maxlength="maxlength"
