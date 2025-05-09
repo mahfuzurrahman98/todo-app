@@ -20,11 +20,7 @@
                 </label>
                 <Input
                     id="email"
-<<<<<<< HEAD:resources/js/components/LoginFormComponent.vue
                     v-model="formData.email"
-=======
-                    v-model="form.email"
->>>>>>> bbc453496a9e05887142fa0da78b71d50f39f90d:resources/js/components/LoginForm.vue
                     type="text"
                     placeholder="name@example.com"
                     :error="errors?.email"
@@ -41,11 +37,7 @@
                 </label>
                 <Input
                     id="password"
-<<<<<<< HEAD:resources/js/components/LoginFormComponent.vue
                     v-model="formData.password"
-=======
-                    v-model="form.password"
->>>>>>> bbc453496a9e05887142fa0da78b71d50f39f90d:resources/js/components/LoginForm.vue
                     type="password"
                     label="Password"
                     placeholder="••••••••"
@@ -74,14 +66,11 @@ import {
 } from "../utils/form-utils";
 import { useAuthStore } from "../stores/authStore";
 import { Loader } from "lucide-vue-next";
+import { ValidationErrorType } from "../utils/interfaces";
 import Button from "./ui/Button.vue";
 import Input from "./ui/Input.vue";
 import ErrorMessage from "./ui/ErrorMessage.vue";
-<<<<<<< HEAD:resources/js/components/LoginFormComponent.vue
-import { ValidationErrorType } from "../utils/interfaces";
 import ErrorAlert from "./ui/ErrorAlert.vue";
-=======
->>>>>>> bbc453496a9e05887142fa0da78b71d50f39f90d:resources/js/components/LoginForm.vue
 
 const router = useRouter();
 const authStore = useAuthStore();
