@@ -4,12 +4,12 @@
     >
         <div class="w-full max-w-md space-y-8">
             <div class="bg-white p-8 rounded-lg shadow-md">
-                <LoginForm />
+                <LoginFormComponent />
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import LoginForm from "../components/LoginForm.vue";
+import LoginFormComponent from "../components/LoginFormComponent.vue";
 </script>
