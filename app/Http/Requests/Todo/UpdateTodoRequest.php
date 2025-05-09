@@ -22,8 +22,8 @@ class UpdateTodoRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|required|string|max:255',
-            'body' => 'sometimes|nullable|string',
+            'title' => 'sometimes|required|string|max:100',
+            'body' => 'sometimes|required|string|max:300',
             'completed' => 'sometimes|boolean',
         ];
     }
@@ -37,7 +37,9 @@ class UpdateTodoRequest extends ApiFormRequest
     {
         return [
             'title.required' => 'The todo title is required',
-            'title.max' => 'The todo title must not exceed 255 characters',
+            'title.max' => 'The todo title must not exceed 100 characters',
+            'body.required' => 'The todo body is required',
+            'body.max' => 'The todo body must not exceed 300 characters',
         ];
     }
 }

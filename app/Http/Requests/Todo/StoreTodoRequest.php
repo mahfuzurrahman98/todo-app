@@ -22,8 +22,8 @@ class StoreTodoRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'body' => 'nullable|string',
+            'title' => 'required|string|max:100',
+            'body' => 'required|string|max:300',
             'completed' => 'boolean',
         ];
     }
@@ -37,7 +37,9 @@ class StoreTodoRequest extends ApiFormRequest
     {
         return [
             'title.required' => 'The todo title is required',
-            'title.max' => 'The todo title must not exceed 255 characters',
+            'title.max' => 'The todo title must not exceed 100 characters',
+            'body.required' => 'The todo body is required',
+            'body.max' => 'The todo body must not exceed 300 characters',
         ];
     }
 }
