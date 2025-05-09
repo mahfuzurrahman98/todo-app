@@ -108,7 +108,9 @@ class TodoApiTest extends TestCase
             ->postJson('/api/todos', $todoData);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['title']);
+            ->assertJson([
+                'message' => 'The todo title is required'
+            ]);
     }
 
     /**
@@ -126,7 +128,9 @@ class TodoApiTest extends TestCase
             ->postJson('/api/todos', $todoData);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['title']);
+            ->assertJson([
+                'message' => 'The todo title must not exceed 100 characters'
+            ]);
     }
 
     /**
@@ -144,7 +148,9 @@ class TodoApiTest extends TestCase
             ->postJson('/api/todos', $todoData);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['body']);
+            ->assertJson([
+                'message' => 'The todo body must not exceed 300 characters'
+            ]);
     }
 
     /**
