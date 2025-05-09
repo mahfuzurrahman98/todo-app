@@ -58,6 +58,10 @@
 
 <script setup lang="ts">
 import { reactive, ref, watch } from "vue";
+<<<<<<< HEAD:resources/js/components/todo/TodoFiltersComponent.vue
+=======
+import Button from "../ui/Button.vue";
+>>>>>>> bbc453496a9e05887142fa0da78b71d50f39f90d:resources/js/components/todo/TodoFilters.vue
 import { RefreshCcw } from "lucide-vue-next";
 import {
     TodoFiltersSortByEnum,
@@ -65,6 +69,9 @@ import {
 } from "../../utils/enums/todo";
 import { TodoFilters } from "../../utils/interfaces/todo";
 import Button from "../ui/Button.vue";
+
+// States
+const resetting = ref(false);
 
 // States
 const resetting = ref(false);
