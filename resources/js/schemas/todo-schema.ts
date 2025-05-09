@@ -9,8 +9,8 @@ import {
 } from "zod";
 
 export const createTodoSchema = object({
-    title: string().min(1, { message: "Title is required" }),
-    body: string().optional(),
+    title: string().min(1, { message: "Title is required" }).max(100),
+    body: string().min(1, { message: "Body is required" }).max(300),
     completed: boolean().default(false),
 });
 
