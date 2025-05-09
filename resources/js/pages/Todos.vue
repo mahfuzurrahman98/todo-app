@@ -33,64 +33,75 @@
                     </div>
                 </div>
 
-                <!-- Filters -->
-                <div class="px-4 py-4 border-b border-gray-200">
-                    <TodoFiltersComponent
-                        :initial-status="filters.status"
-                        :initial-sort-by="filters.sortBy"
-                        @filter-change="handleFilterChange"
-                    />
+                <!-- Error -->
+                <div v-if="error" class="px-4 py-2">
+                    <ErrorAlert :error="error" />
                 </div>
 
-                <!-- Statistics -->
-                <TodoStatistics :statistics="statistics" :loading="loading" />
+                <div v-else>
+                    <!-- Filters -->
+                    <div class="px-4 py-4 border-b border-gray-200">
+                        <TodoFiltersComponent
+                            :initial-status="filters.status"
+                            :initial-sort-by="filters.sortBy"
+                            @filter-change="handleFilterChange"
+                        />
+                    </div>
 
-                <!--Remder Todo list -->
-                <!-- Loading state -->
-                <div v-if="loading" class="py-12 px-6 text-center">
-                    <Loader
-                        class="mx-auto h-12 w-12 text-gray-400 animate-spin"
+                    <!-- Statistics -->
+                    <TodoStatisticsComponent
+                        :statistics="statistics"
+                        :loading="loading"
                     />
-                </div>
-                <!-- Todo list -->
-                <TodoList
-                    v-else-if="todos.length > 0"
-                    :todos="todos"
-                    :is-submitting="isSubmitting"
-                    @reload="fetchTodos"
-                    @toggle-status="toggleTodoStatus"
-                    @delete="deleteTodo"
-                    @create="createTodo"
-                    @update="updateTodo"
-                />
-                <!-- Empty state only if filter status is "all" -->
-                <div
-                    v-else-if="todos.length === 0"
-                    class="py-12 px-6 text-center"
-                >
-                    <ClipboardIcon class="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">
-                        {{
-                            filters.status === "all"
-                                ? "No todos found"
-                                : filters.status === "completed"
-                                ? "No completed todos found"
-                                : "No pending todos found"
-                        }}
-                    </h3>
 
-                    <p class="mt-1 text-sm text-gray-500">
-                        {{
-                            filters.status === "all"
-                                ? "Get started by creating a new todo."
-                                : "Try changing or reset the filters."
-                        }}
-                    </p>
-                    <div v-if="filters.status === 'all'" class="mt-6">
-                        <Button @click="$emit('new-todo')">
-                            <PlusIcon class="h-4 w-4 mr-1" />
-                            New Todo
-                        </Button>
+                    <!-- Create Todo Form -->
+                    <div class="px-4 py-2 border-b">
+                        <CreateTodoComponent
+                            @refetch="fetchTodos"
+                            @loadStats="loadStatistics"
+                        />
+                    </div>
+
+                    <!--Render Todo list -->
+                    <!-- Loading state -->
+                    <div v-if="loading" class="py-12 px-6 text-center">
+                        <Loader
+                            class="mx-auto h-12 w-12 text-gray-400 animate-spin"
+                        />
+                    </div>
+
+                    <!-- Todo list -->
+                    <TodoListComponent
+                        v-else-if="todos.length > 0"
+                        :todos="todos"
+                        @refetch="fetchTodos"
+                        @loadStats="loadStatistics"
+                    />
+                    <!-- Empty state only if filter status is "all" -->
+                    <div
+                        v-else-if="todos.length === 0"
+                        class="py-12 px-6 text-center"
+                    >
+                        <ClipboardIcon
+                            class="mx-auto h-12 w-12 text-gray-400"
+                        />
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">
+                            {{
+                                filters.status === "all"
+                                    ? "No todos found"
+                                    : filters.status === "completed"
+                                    ? "No completed todos found"
+                                    : "No pending todos found"
+                            }}
+                        </h3>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{
+                                filters.status === "all"
+                                    ? "Get started by creating a new todo."
+                                    : "Try changing or reset the filters."
+                            }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -99,24 +110,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
-import TodoList from "../components/todo/TodoList.vue";
-import TodoStatistics from "../components/todo/TodoStatistics.vue";
-import TodoFiltersComponent from "../components/todo/TodoFilters.vue";
 import { todoService } from "../services/TodoService";
-import {
-    Loader,
-    PlusIcon,
-    ClipboardIcon,
-    LogOut,
-    LoaderCircle,
-} from "lucide-vue-next";
-import { CreateTodo, Todo } from "../schemas/todo-schema";
-import { TodoFilters, TodoFormValue, TodoStats } from "../interfaces/todo";
-import Button from "../components/ui/Button.vue";
+import { Loader, ClipboardIcon, LogOut, LoaderCircle } from "lucide-vue-next";
+import { TodoFilters, TodoStats } from "../utils/interfaces/todo";
 import { useAuthStore } from "../stores/authStore";
-import { TodoFiltersSortByEnum, TodoFiltersStatusEnum } from "../enums/todo";
+import {
+    TodoFiltersSortByEnum,
+    TodoFiltersStatusEnum,
+} from "../utils/enums/todo";
+import { Todo } from "../schemas/todo-schema";
+import TodoListComponent from "../components/todo/TodoListComponent.vue";
+import TodoStatisticsComponent from "../components/todo/TodoStatisticsComponent.vue";
+import TodoFiltersComponent from "../components/todo/TodoFiltersComponent.vue";
+import CreateTodoComponent from "../components/todo/CreateTodoComponent.vue";
+import Button from "../components/ui/Button.vue";
+import ErrorAlert from "../components/ui/ErrorAlert.vue";
 
 // Router and Auth
 const router = useRouter();
@@ -132,8 +142,6 @@ const userName = computed(() => {
 const todos = ref<Todo[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
-const isSubmitting = ref(false);
-const isDeleting = ref(false);
 
 // Filters
 const filters = reactive<TodoFilters>({
@@ -214,117 +222,9 @@ const loadStatistics = () => {
         statistics.total = allTodos.value.length;
         statistics.completed = allTodos.value.filter((t) => t.completed).length;
         statistics.pending = allTodos.value.filter((t) => !t.completed).length;
-    } catch (err) {
+    } catch (err: any) {
         // Silently fail, not critical
         console.error("Failed to load statistics", err);
-    }
-};
-
-// Toggle todo status
-const toggleTodoStatus = async (todo: Todo) => {
-    try {
-        const updatedTodo = { ...todo, completed: !todo.completed };
-        await todoService.update(todo.id, { completed: !todo.completed });
-
-        // Update both all todos and filtered todos
-        const allIndex = allTodos.value.findIndex((t) => t.id === todo.id);
-        if (allIndex !== -1) {
-            allTodos.value[allIndex] = {
-                ...allTodos.value[allIndex],
-                completed: !todo.completed,
-            };
-        }
-
-        // Also update the filtered list
-        const filteredIndex = todos.value.findIndex((t) => t.id === todo.id);
-        if (filteredIndex !== -1) {
-            todos.value[filteredIndex] = {
-                ...todos.value[filteredIndex],
-                completed: !todo.completed,
-            };
-        }
-
-        // Refresh statistics
-        loadStatistics();
-    } catch (err: any) {
-        error.value = err.message || "Failed to update todo status";
-    }
-};
-
-// Create a new todo
-const createTodo = async (data: CreateTodo) => {
-    try {
-        isSubmitting.value = true;
-        error.value = null;
-
-        // Create new todo
-        const newTodo = await todoService.create({
-            title: data.title,
-            body: data.body,
-            completed: data.completed || false,
-        });
-
-        // Add to all todos
-        allTodos.value.push(newTodo);
-
-        // Re-apply filters and update statistics
-        applyFilters();
-        loadStatistics();
-    } catch (err: any) {
-        error.value = err.message || "Failed to create todo";
-    } finally {
-        isSubmitting.value = false;
-    }
-};
-
-// Update an existing todo
-const updateTodo = async (id: number, updates: TodoFormValue) => {
-    try {
-        isSubmitting.value = true;
-        error.value = null;
-
-        // Make sure we have a valid ID
-        if (!id) {
-            throw new Error("Invalid todo ID");
-        }
-
-        // Update existing todo
-        const updatedTodo = await todoService.update(id, updates);
-
-        // Update in allTodos
-        const allIndex = allTodos.value.findIndex((t) => t.id === id);
-        if (allIndex !== -1) {
-            allTodos.value[allIndex] = updatedTodo;
-        }
-
-        // Re-apply filters and update statistics
-        applyFilters();
-        loadStatistics();
-    } catch (err: any) {
-        console.error("Error updating todo:", err);
-        error.value = err.message || "Failed to update todo";
-    } finally {
-        isSubmitting.value = false;
-    }
-};
-
-// Delete todo
-const deleteTodo = async (todo: Todo) => {
-    try {
-        isDeleting.value = true;
-        error.value = null;
-        await todoService.delete(todo.id);
-
-        // Remove from allTodos
-        allTodos.value = allTodos.value.filter((t) => t.id !== todo.id);
-
-        // Re-apply filters and update statistics
-        applyFilters();
-        loadStatistics();
-    } catch (err: any) {
-        error.value = err.message || "Failed to delete todo";
-    } finally {
-        isDeleting.value = false;
     }
 };
 
@@ -338,7 +238,7 @@ const handleLogout = async () => {
         isLoggingOut.value = true;
         await authStore.logout();
         router.push("/login");
-    } catch (err) {
+    } catch (err: any) {
         console.error("Failed to logout", err);
     } finally {
         isLoggingOut.value = false;
