@@ -6,9 +6,7 @@
                 <div
                     class="px-4 py-4 border-b border-gray-200 flex justify-between items-center"
                 >
-                    <h1 class="text-xl font-semibold text-gray-900">
-                        Your Todos
-                    </h1>
+                    <h1 class="text-xl font-semibold text-gray-900">Todos</h1>
                     <div class="flex items-center space-x-4">
                         <span
                             v-if="user"
