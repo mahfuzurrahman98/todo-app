@@ -33,6 +33,33 @@ class UserFactory extends Factory
     }
 
     /**
+     * Get predefined users for seeding.
+     */
+    public function getPredefinedUsers(): array
+    {
+        return [
+            [
+                'name' => 'Mahfuz',
+                'email' => 'mahfuz@test.com',
+                'password' => Hash::make('Pass@123'),
+                'email_verified_at' => now(),
+                'remember_token' => Str::random(10),
+                'created_at' => now()->subDays(25),
+                'updated_at' => now()->subDays(25),
+            ],
+            [
+                'name' => 'Samia',
+                'email' => 'samia@test.com',
+                'password' => Hash::make('Pass@123'),
+                'email_verified_at' => now(),
+                'remember_token' => Str::random(10),
+                'created_at' => now()->subDays(24),
+                'updated_at' => now()->subDays(24),
+            ]
+        ];
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static
