@@ -1,61 +1,42 @@
 # Laravel Vue Todo App
 
 ## Live Demo
+
 **Deployed at:** [Todo App](https://ghostwhite-partridge-578659.hostingersite.com)
 
 ### Demo Login
-- Email: mahfuz@test.com
-- Password: Pass@123
+
+-   Email: mahfuz@test.com
+-   Password: Pass@123
 
 ## Overview
+
 A modern Todo application built with Laravel and Vue.js, featuring secure authentication and comprehensive task management.
 
 ## Key Features
-- User Authentication with Laravel Sanctum
-- Todo CRUD Operations
-- Form Validation with Zod
-- Responsive UI with Tailwind CSS
-- Real-time Statistics
+
+-   User Authentication with Laravel Sanctum
+-   Todo CRUD Operations
+-   Form Validation with Zod
+-   Responsive UI with Tailwind CSS
+-   Real-time Statistics
 
 ## Tech Stack
+
 ### Backend
-- Laravel 12
-- MySQL
-- Laravel Sanctum
-- PHPUnit
+
+-   Laravel 12
+-   MySQL
+-   Laravel Sanctum
+-   PHPUnit
 
 ### Frontend
-- Vue.js 3
-- TypeScript
-- Tailwind CSS
-- Vue Router
-- Zod
 
-## Quick Start
-1. Clone and install:
-```bash
-composer install
-npm install
-```
-
-2. Setup environment:
-```bash
-cp .env.example .env
-php artisan key:generate
-```
-
-3. Configure database in `.env`
-
-4. Prepare database (manual user entry):
-```bash
-php artisan migrate --seed
-```
-
-5. Start development:
-```bash
-php artisan serve
-npm run dev
-```
+-   Vue.js 3
+-   TypeScript
+-   Tailwind CSS
+-   Vue Router
+-   Zod
 
 ## Project Overview
 
@@ -113,7 +94,7 @@ resources/js/
 
 ### Backend Structure
 
-```
+````
 app/
 ├── Http/
 │   ├── Controllers/      # API controllers
@@ -122,9 +103,17 @@ app/
 ```bash
 composer install
 npm install
+````
+
+1. Clone and install:
+
+```bash
+composer install
+npm install
 ```
 
 2. Setup environment:
+
 ```bash
 cp .env.example .env
 php artisan key:generate
@@ -133,17 +122,36 @@ php artisan key:generate
 3. Configure database in `.env`
 
 4. Prepare database:
+
 ```bash
 php artisan migrate --seed
 ```
 
 5. Start development:
+
 ```bash
 php artisan serve
 npm run dev
 ```
 
 ## Testing
+
+### Database Configuration
+For testing, you can use SQLite instead of MySQL. Update your `.env.testing` file with:
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+```
+
+### Factory Data
+The application includes factory definitions for both users and todos:
+- **UserFactory**: Generates random users and provides predefined test users
+- **TodoFactory**: Creates random todos and includes a set of predefined todos
+
+These factories are used both for testing and seeding the development database.
+
+### Running Tests
 ```bash
 # Backend tests
 php artisan test
