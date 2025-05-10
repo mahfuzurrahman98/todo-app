@@ -9,11 +9,7 @@
                     type="checkbox"
                     :checked="todo.completed"
                     @change="handleToggleStatus"
-                    class="h-4 w-4 accent-gray-900"
-                    :class="{
-                        'mt-1.5': todo.body,
-                        'mt-1': !todo.body,
-                    }"
+                    class="h-4 w-4 accent-gray-900 mt-1.5"
                 />
             </div>
 
