@@ -13,21 +13,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create two users
-        // Another with email mahfuz@test.com
-        // One with email samia@test.com
-        // Password is Pass@123
+        // Get predefined users and create them
+        $factory = User::factory();
+        $predefinedUsers = $factory->getPredefinedUsers();
 
-        User::create([
-            'name' => 'Mahfuz',
-            'email' => 'mahfuz@test.com',
-            'password' => Hash::make('Pass@123'),
-        ]);
+        foreach ($predefinedUsers as $user) {
+            User::create($user);
+        }
 
-        User::create([
-            'name' => 'Samia',
-            'email' => 'samia@test.com',
-            'password' => Hash::make('Pass@123'),
-        ]);
+        // For testing, create additional random users if needed
+        if (app()->environment('testing')) {
+            User::factory()->count(3)->create();
+        }
     }
 }
