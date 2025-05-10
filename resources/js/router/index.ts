@@ -62,24 +62,13 @@ router.beforeEach(
         const authStore = useAuthStore();
         const requiresAuth = to.meta.requiresAuth as boolean;
 
-        alert(
-            `For route ${String(
-                to.name
-            )} requiresAuth is ${requiresAuth} and isAuthenticated is ${
-                authStore.isAuthenticated
-            }`
-        );
-
         if (requiresAuth && !authStore.isAuthenticated) {
-            alert("You must be logged in to view this page.");
             // Redirect to login if authentication is required but user is not authenticated
             next({ name: "Login" });
         } else if (!requiresAuth && authStore.isAuthenticated) {
-            alert("You must be logged out to view this page.");
             // Redirect to home if authentication is not required but user is authenticated
             next({ name: "Todos" });
         } else {
-            alert("Continue as it is");
             // Continue navigation
             next();
         }
