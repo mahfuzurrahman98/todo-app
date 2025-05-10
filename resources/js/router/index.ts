@@ -1,4 +1,3 @@
-import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
 import Todos from "../pages/Todos.vue";
 import NotFound from "../pages/NotFound.vue";
@@ -27,8 +26,8 @@ const routes: RouteRecordRaw[] = [
         name: "Todos",
         component: Todos,
         meta: {
-            requiresAuth: true,
             title: "Todos",
+            requiresAuth: true,
         },
     },
     // Catch-all route for 404
@@ -63,13 +62,24 @@ router.beforeEach(
         const authStore = useAuthStore();
         const requiresAuth = to.meta.requiresAuth as boolean;
 
+        alert(
+            `For route ${String(
+                to.name
+            )} requiresAuth is ${requiresAuth} and isAuthenticated is ${
+                authStore.isAuthenticated
+            }`
+        );
+
         if (requiresAuth && !authStore.isAuthenticated) {
+            alert("You must be logged in to view this page.");
             // Redirect to login if authentication is required but user is not authenticated
-            next({ name: "Login", query: { redirect: to.fullPath } });
+            next({ name: "Login" });
         } else if (!requiresAuth && authStore.isAuthenticated) {
+            alert("You must be logged out to view this page.");
             // Redirect to home if authentication is not required but user is authenticated
-            next({ name: "Home" });
+            next({ name: "Todos" });
         } else {
+            alert("Continue as it is");
             // Continue navigation
             next();
         }
