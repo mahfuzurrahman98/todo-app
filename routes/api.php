@@ -21,8 +21,8 @@ Route::prefix('todos')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [TodoController::class, 'store'])->name('todos.store');
     Route::get('/', [TodoController::class, 'index'])->name('todos.index');
     Route::middleware(CheckTodoOwnership::class)->group(function () {
-        Route::get('/{todo}', [TodoController::class, 'show'])->name('todos.show');
-        Route::put('/{todo}', [TodoController::class, 'update'])->name('todos.update');
-        Route::delete('/{todo}', [TodoController::class, 'destroy'])->name('todos.destroy');
+        Route::get('/{id}', [TodoController::class, 'show'])->name('todos.show');
+        Route::put('/{id}', [TodoController::class, 'update'])->name('todos.update');
+        Route::delete('/{id}', [TodoController::class, 'destroy'])->name('todos.destroy');
     });
 });
