@@ -17,8 +17,9 @@ class CheckTodoOwnership
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $todo = $request->route('todo');
+        $id = $request->route('id');
 
+        $todo = Todo::find($id);
         if (!$todo || $todo->user_id !== request()->user()->id) {
             return FacadesResponse::api('You are not authorized to perform this action', null, 403);
         }
