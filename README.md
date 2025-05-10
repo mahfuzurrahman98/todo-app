@@ -100,6 +100,10 @@ app/
 │   ├── Controllers/      # API controllers
 │   ├── Requests/         # Form request validation
 │   └── Resources/        # API resources
+├── Services/            # Business logic layer
+├── Repositories/        # Data access layer
+│   ├── Interfaces/      # Repository interfaces
+│   └── Eloquent/        # Eloquent implementations
 ```bash
 composer install
 npm install
@@ -178,3 +182,16 @@ The application uses reactive state management with Vue's Composition API, and P
 ### API Integration
 
 API calls are abstracted through service layers, making the code more maintainable and testable.
+
+### Architecture Pattern
+
+The application follows the Repository pattern with a Service layer:
+
+- **Repository Layer**: Handles data access operations, abstracting the database interactions
+  - Interfaces define the contract for data operations
+  - Eloquent implementations provide the actual database logic
+
+- **Service Layer**: Contains business logic and orchestrates the application flow
+  - Handles authorization checks
+  - Coordinates between controllers and repositories
+  - Manages complex operations and transactions
