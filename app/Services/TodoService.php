@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\TodoRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class TodoService
 {
@@ -14,46 +14,49 @@ class TodoService
         $this->todoRepository = $todoRepository;
     }
 
-    public function getAllTodos()
+
+    public function getAllTodos($userId = null)
     {
-        return $this->todoRepository->getAll(Auth::id());
+        try {
+            return $this->todoRepository->getAll($userId);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
-    public function getTodoById($id)
+    public function getTodoById(int $id)
     {
-        $todo = $this->todoRepository->findById($id);
-
-        if (!$todo || $todo->user_id !== Auth::id()) {
-            return null;
+        try {
+            return $this->todoRepository->findById($id);
+        } catch (Exception $e) {
+            throw $e;
         }
-
-        return $todo;
     }
 
     public function createTodo(array $data)
     {
-        return $this->todoRepository->create($data);
+        try {
+            return $this->todoRepository->create($data);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
-    public function updateTodo($id, array $data)
+    public function updateTodo(int $id, array $data)
     {
-        $todo = $this->todoRepository->findById($id);
-
-        if (!$todo || $todo->user_id !== Auth::id()) {
-            return null;
+        try {
+            return $this->todoRepository->update($id, $data);
+        } catch (Exception $e) {
+            throw $e;
         }
-
-        return $this->todoRepository->update($id, $data);
     }
 
-    public function deleteTodo($id)
+    public function deleteTodo(int $id)
     {
-        $todo = $this->todoRepository->findById($id);
-
-        if (!$todo || $todo->user_id !== Auth::id()) {
-            return false;
+        try {
+            return $this->todoRepository->delete($id);
+        } catch (Exception $e) {
+            throw $e;
         }
-
-        return $this->todoRepository->delete($id);
     }
 }
