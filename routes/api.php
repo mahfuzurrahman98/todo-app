@@ -7,12 +7,12 @@ use App\Http\Middleware\CheckTodoOwnership;
 
 // Auth routes
 Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
     // Protected routes
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+        Route::get('/profile', [AuthController::class, 'profile'])->name('auth.profile');
     });
 });
 
