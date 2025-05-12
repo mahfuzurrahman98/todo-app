@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Requests\Todo\StoreTodoRequest;
 use App\Http\Requests\Todo\UpdateTodoRequest;
 use App\Http\Resources\TodoResource;
+use Exception;
 
 class TodoController extends Controller
 {
@@ -24,12 +25,13 @@ class TodoController extends Controller
     public function index(Request $request)
     {
         try {
-            $todos = $this->todoService->getAllTodos();
+            $user = $request->user();
+            $todos = $this->todoService->getAllTodos($user->id);
 
             return Response::api('Todos fetched successfully', [
                 'todos' => TodoResource::collection($todos)
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
     }
@@ -44,7 +46,7 @@ class TodoController extends Controller
             $data['user_id'] = $request->user()->id;
             $todo = $this->todoService->createTodo($data);
             return Response::api('Todo created successfully', ['todo' => TodoResource::make($todo)], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
     }
@@ -62,7 +64,7 @@ class TodoController extends Controller
             }
 
             return Response::api('Todo fetched successfully', ['todo' => TodoResource::make($todo)], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
     }
@@ -70,9 +72,10 @@ class TodoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTodoRequest $request, $id)
+    public function update(UpdateTodoRequest $request, int $id)
     {
         try {
+            // dd($id);
             $todo = $this->todoService->updateTodo($id, $request->validated());
 
             if (!$todo) {
@@ -80,7 +83,7 @@ class TodoController extends Controller
             }
 
             return Response::api('Todo updated successfully', ['todo' => TodoResource::make($todo)], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
     }
@@ -88,7 +91,7 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         try {
             $deleted = $this->todoService->deleteTodo($id);
@@ -98,7 +101,7 @@ class TodoController extends Controller
             }
 
             return Response::api('Todo deleted successfully', null, 204);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Response::api($e->getMessage(), null, 500);
         }
     }
