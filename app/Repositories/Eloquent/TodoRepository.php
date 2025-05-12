@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Todo;
 use App\Repositories\Interfaces\TodoRepositoryInterface;
+use Exception;
 
 class TodoRepository implements TodoRepositoryInterface
 {
@@ -16,38 +17,58 @@ class TodoRepository implements TodoRepositoryInterface
 
     public function getAll($userId = null)
     {
-        if ($userId) {
-            return $this->model->where('user_id', $userId)->get();
+        try {
+            if ($userId) {
+                return $this->model->where('user_id', $userId)->get();
+            }
+            return $this->model->all();
+        } catch (Exception $e) {
+            throw $e;
         }
-        return $this->model->all();
     }
 
-    public function findById($id)
+    public function findById(int $id)
     {
-        return $this->model->find($id);
+        try {
+            return $this->model->find($id);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     public function create(array $data)
     {
-        return $this->model->create($data);
+        try {
+            return $this->model->create($data);
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
-    public function update($id, array $data)
+    public function update(int $id, array $data)
     {
-        $todo = $this->model->find($id);
-        if ($todo) {
+        try {
+            $todo = $this->model->find($id);
+            if (!$todo) {
+                throw new Exception('Todo not found');
+            }
             $todo->update($data);
-            return $todo;
+            return $todo->fresh();
+        } catch (Exception $e) {
+            throw $e;
         }
-        return null;
     }
 
-    public function delete($id)
+    public function delete(int $id)
     {
-        $todo = $this->model->find($id);
-        if ($todo) {
+        try {
+            $todo = $this->model->find($id);
+            if (!$todo) {
+                throw new Exception('Todo not found');
+            }
             return $todo->delete();
+        } catch (Exception $e) {
+            throw $e;
         }
-        return false;
     }
 }
